@@ -1,0 +1,98 @@
+# aliases
+
+confirm() {
+    if [ -n "$ZSH_VERSION" ]; then
+        read -k 1 "?$1 (y/N) "
+    else
+        read -p "$1 (y/N) " -n 1
+    fi
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        return 1
+    fi
+}
+alias con='if confirm "U SURE?!"; then echo "WIN"; fi'
+
+_err() {
+    echo $1 1>&2
+    return 1
+}
+
+bk() {
+    local file="$1"
+    cp -fb $file $file
+}
+
+newsh() {
+    local editor=${EDITOR:-`which nano`}
+    local script="$1"
+    if [[ $script != *".sh" ]]; then
+        script="$script".sh
+    fi
+    if [ -a "$script" ]; then 
+        return `_err "$0: file '$script' already exists"`
+    else 
+        echo "#!/bin/bash" > $script
+        chmod +x $script
+        eval $editor $script
+    fi
+}
+
+# custom defaults
+alias exit=''
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias rm='rm -iv'
+alias ls='ls --color=auto -1'
+alias tail='tail -n 30'
+
+# shortcuts
+alias l='ls -lhB'
+alias la='ls -lhA'
+alias lb='ls -lhAB'
+alias install='sudo apt-get install -y'
+alias purge='sudo apt-get purge -y'
+alias fuck='sudo $(history -p \!\!)'
+alias syslog='cat /var/log/syslog'
+alias cutcol='cut -c1-$COLUMNS'
+alias snmpg='snmpget -v 2c -c public'
+alias wecho='wget -q -O -'
+alias gog='go get -v -u'
+alias gob='go build -v'
+
+nano() {
+    if [[ -n $1 && -w $1 ]]; then
+        command nano "$@"
+    else
+        sudo command nano "$@"
+    fi
+}
+
+getsel() {
+    [ -x /usr/bin/xsel ] && { xsel; return; }
+    [ -x /usr/bin/xclip ] && { xclip -o; return; }
+    return `_err "$0: 'xsel or xclip required'"`
+}
+
+putsel() {
+    if [ -x /usr/bin/xsel ]; then
+        echo $1 | xsel -b
+    elif [ -x /usr/bin/xclip ]; then
+        echo $1 | xclip -selection clipboard
+    else
+        return `_err "$0: 'xsel or xclip required'"`
+    fi
+}
+
+# uploads input to termbin.com and prints link to it
+alias termbin='nc termbin.com 9999'
+alias tsel='getsel | termbin'
+alias tbin='putsel $(getsel | termbin)'
+
+backup() {
+    local dir="$1"
+    [[ -e $dir ]] || return `_err "$0: '$dir' does not exist"`
+    #[[ -d $dir ]] || echo "$0: not a folder" 1>&2
+    [[ -d $dir ]] || return `_err "$0: '$dir' is not a directory"`
+}
+
