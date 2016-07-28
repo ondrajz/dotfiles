@@ -45,15 +45,16 @@ local clock="%{%B%F{black}%}[%{%b%f%}%D{%H:%M:%S}%{%B%F{black}%}]%{%b%f%}"
 
 last_result() {
     if [ "$LAST_RESULT" -gt 0 ]; then
-        echo "%{%F{red}%}%?⏎"
+        echo "%{%F{red}%}$LAST_RESULT↵ "
     elif [ "$LAST_RESULT" -eq 0 ]; then
-        echo "%{%F{green}%}ok"
+        echo "%{%F{green}%}✓ "
     fi
 }
 
 function render_top_bar {
     local result="$(last_result)"
     [ -z $result ] && { TOP_BAR=""; return }
+    [ "$LAST_EXEC_TIME" -gt 0 ] && result="%{%B%F{blue}%}${LAST_EXEC_TIME}s%{%b%f%} $result"
     
     local zero='%([BSUbfksu]|([FB]|){*})'
     local width=${#${(S%%)result//$~zero/}}
@@ -64,18 +65,16 @@ function render_top_bar {
 }
 
 setprompt () {
-    ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{black}%}<%F{cyan}"
-    ZSH_THEME_GIT_PROMPT_DIRTY=" %F{red}✗"
-    ZSH_THEME_GIT_PROMPT_CLEAN=" %F{green}✓"
-    ZSH_THEME_GIT_PROMPT_SUFFIX="%{%B%F{black}%}>%{%f%b%} "
-
-    res_code="%(?.ok.%{$FG[001]%}%?⏎)"
+    ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{black}%}%F{magenta}"
+    ZSH_THEME_GIT_PROMPT_DIRTY="%F{red}⊗"
+    ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}⊙"
+    ZSH_THEME_GIT_PROMPT_SUFFIX="%{%B%F{black}%}%{%f%b%} "
 
     PROMPT='${(e)TOP_BAR}\
 %{%B%F{white}%}╭─[${username}\
 %{%b%F{white}%}@${hostname}\
 %F{white}:%F{white}%l%f %{%B%F{black}%}»%{%b%f%} \
-%F{yellow}%~%f \
+%{%B%F{yellow}%}%~ %{%B%F{black}%}›%{%b%f%} \
 $(git_prompt_info)\
 %{%B%F{black}%K{black}%}%E%{%f%k%b%}
 %{%B%F{white}%}╰%(#.%F{red}.)➤%{%f%k%b%} '
@@ -86,4 +85,6 @@ $(git_prompt_info)\
 setopt prompt_subst
 setprompt
 add-zsh-hook precmd render_top_bar
+
+exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
 
