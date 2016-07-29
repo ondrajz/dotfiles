@@ -1,90 +1,88 @@
 # https://github.com/truefurby zsh theme
 
-export LAST_EXEC_TIME="0"
-export LAST_RESULT="-1"
+LAST_EXEC_TIME="0"
+LAST_RESULT="-1"
 
-function pad_hook_preexec {
+typeset -ghi _nextcmd _lastcmd
+
+hook_preexec() {
     timer=${timer:-$SECONDS}
+    (( _nextcmd++ ))
 }
 
-autoload -Uz add-zsh-hook
-
-function pad_hook_precmd {
+hook_precmd() {
+    local res=$(print -P "%?")
+    if (( _nextcmd == _lastcmd ));  then
+        LAST_RESULT="-1"
+    else
+        LAST_RESULT="$res"
+        (( _lastcmd = _nextcmd ))
+    fi
     if [ $timer ]; then
-        export LAST_EXEC_TIME="$(($SECONDS - $timer))"
+        LAST_EXEC_TIME="$(($SECONDS - $timer))"
         unset timer
     fi
 }
 
-add-zsh-hook preexec pad_hook_preexec
-add-zsh-hook precmd pad_hook_precmd
+ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%F{white}%}git:%{%b%F{black}%}%F{magenta}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{red}⊗"
+ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}⊙"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%} "
 
-typeset -ghi _nextcmd _lastcmd
-
-function result_hook_preexec {
-    (( _nextcmd++ ))
+prompt_who() {
+    local user="%(#.%{%b%F{red}%}%n.%{%b%F{green}%}%n)"
+    local host="%{%b%F{cyan}%m%}"
+    local pts="%{%b%F{white}%y%}"
+    echo "$user%{%b%F{white}%}@$host%{%b%F{white}%}:$pts%{%f%b%}"
 }
 
-function result_hook_precmd {
-    local res=$(print -P "%?")
-    if (( _nextcmd == _lastcmd ));  then
-        export LAST_RESULT="-1"
-    else
-        export LAST_RESULT="$res"
-        (( _lastcmd = _nextcmd ))
-    fi
+prompt_dir() {
+    echo "%{%b%F{yellow}%}%~%{%f%b%}"
 }
 
-add-zsh-hook preexec result_hook_preexec
-add-zsh-hook precmd result_hook_precmd
-
-local username="%(#.%{%b%F{red}%}%n.%{%b%F{green}%}%n)"
-local hostname="%{%b%F{cyan}%m%}"
-local clock="%{%B%F{black}%}[%{%b%f%}%D{%H:%M:%S}%{%B%F{black}%}]%{%b%f%}"
-#local histid="%{%b%F{white}%}!%{%B%F{black}%}%!%{%f%k%b%}"
-
-last_result() {
+prompt_result_line() {
+    local result
     if [ "$LAST_RESULT" -gt 0 ]; then
-        echo "%{%F{red}%}$LAST_RESULT↵ "
+        result="%F{red}"
     elif [ "$LAST_RESULT" -eq 0 ]; then
-        echo "%{%F{green}%}✓ "
+        result="%F{green}"
+    else
+        RESULT_LINE=""
+        return
     fi
-}
-
-function render_top_bar {
-    local result="$(last_result)"
-    [ -z $result ] && { TOP_BAR=""; return }
-    [ "$LAST_EXEC_TIME" -gt 0 ] && result="%{%B%F{blue}%}${LAST_EXEC_TIME}s%{%b%f%} $result"
+    result+="$LAST_RESULT↵"
+    if [ "$LAST_EXEC_TIME" -gt 0 ]; then
+        result="%{%b%F{blue}%}${LAST_EXEC_TIME}s $result"
+    fi
     
     local zero='%([BSUbfksu]|([FB]|){*})'
     local width=${#${(S%%)result//$~zero/}}
-    local fill="\${(l:(($COLUMNS - ($width + 2))):: :)}"
+    local fill="\${(l:(($COLUMNS - ($width + 1))):: :)}"
+    local newline=$'\n'
     
-    TOP_BAR="$fill$result
-"
+    RESULT_LINE="$fill$result$newline"
 }
 
-setprompt () {
-    ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{black}%}%F{magenta}"
-    ZSH_THEME_GIT_PROMPT_DIRTY="%F{red}⊗"
-    ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}⊙"
-    ZSH_THEME_GIT_PROMPT_SUFFIX="%{%B%F{black}%}%{%f%b%} "
+prompt_setup() {
+    autoload -Uz colors && colors
+    autoload -Uz add-zsh-hook
 
-    PROMPT='${(e)TOP_BAR}\
-%{%B%F{white}%}╭─[${username}\
-%{%b%F{white}%}@${hostname}\
-%F{white}:%F{white}%l%f %{%B%F{black}%}»%{%b%f%} \
-%{%B%F{yellow}%}%~ %{%B%F{black}%}›%{%b%f%} \
-$(git_prompt_info)\
-%{%B%F{black}%K{black}%}%E%{%f%k%b%}
-%{%B%F{white}%}╰%(#.%F{red}.)➤%{%f%k%b%} '
+    add-zsh-hook preexec hook_preexec
+    add-zsh-hook precmd hook_precmd
+    add-zsh-hook precmd prompt_result_line
 
-    RPROMPT='%{$(echotc UP 1)%} ${clock} %{$(echotc DO 1)%}'
+    setopt prompt_subst
+
+    PROMPT='%{%f%b%k%}${(e)RESULT_LINE}\
+%{%b%F{white}%}╭─$(prompt_who) \
+%{%b%F{white}%}» $(prompt_dir) \
+%{%b%F{white}%}› $(git_prompt_info)
+%{%b%F{white}%}╰%(#.%F{red}.)➤%{%f%b%k%} '
+
+    RPROMPT='%{$(echotc UP 1)%}%{%b%F{white}%}[%D{%H:%M:%S}]%{%b%f%}%{$(echotc DO 1)%}'
 }
 
-setopt prompt_subst
-setprompt
-add-zsh-hook precmd render_top_bar
+prompt_setup
 
-exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
+#exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
 
