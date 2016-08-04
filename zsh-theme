@@ -24,62 +24,80 @@ hook_precmd() {
     fi
 }
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%F{white}%}git:%{%b%F{black}%}%F{magenta}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%F{red}⊗"
-ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}⊙"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%} "
-
-prompt_who() {
-    local user="%(#.%{%b%F{red}%}%n.%{%b%F{green}%}%n)"
-    local host="%{%b%F{cyan}%m%}"
-    local pts="%{%b%F{white}%y%}"
-    echo "$user%{%b%F{white}%}@$host%{%b%F{white}%}:$pts%{%f%b%}"
-}
-
-prompt_dir() {
-    echo "%{%b%F{yellow}%}%~%{%f%b%}"
-}
-
 prompt_result_line() {
     local result
-    if [ "$LAST_RESULT" -gt 0 ]; then
-        result="%F{red}"
-    elif [ "$LAST_RESULT" -eq 0 ]; then
-        result="%F{green}"
+    local elapsed
+
+    if [ "$LAST_EXEC_TIME" -gt 0 ]; then
+        elapsed="$(( $LAST_EXEC_TIME % 60 ))s"
+        (( $LAST_EXEC_TIME >= 60 )) && elapsed="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$elapsed"
+        (( $LAST_EXEC_TIME >= 3600 )) && elapsed="$(( $LAST_EXEC_TIME / 3600 ))h$elapsed"
+    fi
+    
+    if [ "$LAST_RESULT" -eq 0 ]; then
+        result="%{%b%F{green}%}$elapsed %{%B%F{green}%}$LAST_RESULT↵%{%f%b%}"
+    elif [ "$LAST_RESULT" -gt 0 ]; then
+        result="%{%b%F{red}%}$elapsed %{%B%F{red}%}$LAST_RESULT↵%{%f%b%}"
     else
         RESULT_LINE=""
-        return
+        return 0
     fi
-    result+="$LAST_RESULT↵"
-    if [ "$LAST_EXEC_TIME" -gt 0 ]; then
-        result="%{%b%F{blue}%}${LAST_EXEC_TIME}s $result"
-    fi
-    
+
+    local left=" %{%B%F{black}%}!%h%{%f%b%k%}"
+
     local zero='%([BSUbfksu]|([FB]|){*})'
     local width=${#${(S%%)result//$~zero/}}
-    local fill="\${(l:(($COLUMNS - ($width + 1))):: :)}"
+    local width2=${#${(S%%)left//$~zero/}}
+    local fill="\${(l:(($COLUMNS - ($width + $width2 + 1))):: :)}"
     local newline=$'\n'
-    
-    RESULT_LINE="$fill$result$newline"
+
+    RESULT_LINE="$left$fill$result$newline"
+}
+
+prompt_who() {
+    local user="%(#.%{%b%F{red}%}.%{%b%F{green}%})%n%{%f%b%}"
+    local host="%{%b%F{cyan}%}%m%{%f%b%}"
+    local pts="%{%B%F{blue}%}%y%{%f%b%}"
+    echo "${user}@${host}:${pts}"
+}
+
+ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{magenta}%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%b%F{red}⊗"
+ZSH_THEME_GIT_PROMPT_CLEAN="%b%F{green}⊙"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%} "
+
+prompt_where() {
+    local cvs=$(git_prompt_info)
+    if [ -n "$cvs" ]; then
+        echo "%{%b%F{magenta}%}%1d%{%f%b%}:${cvs}"
+    else
+        echo "%{%b%F{yellow}%}%~%{%f%b%}"
+    fi
+}
+
+prompt_char() {
+    echo "%(#.%{%B%F{red}%}.%{%B%F{white}%})➤"
+}
+
+prompt_clock() {
+    echo "[%{%B%f%}%D{%H:%M:%S}%{%b%f%}]"
 }
 
 prompt_setup() {
     autoload -Uz colors && colors
-    autoload -Uz add-zsh-hook
 
+    autoload -Uz add-zsh-hook
     add-zsh-hook preexec hook_preexec
     add-zsh-hook precmd hook_precmd
     add-zsh-hook precmd prompt_result_line
 
     setopt prompt_subst
 
-    PROMPT='%{%f%b%k%}${(e)RESULT_LINE}\
-%{%b%F{white}%}╭─$(prompt_who) \
-%{%b%F{white}%}» $(prompt_dir) \
-%{%b%F{white}%}› $(git_prompt_info)
-%{%b%F{white}%}╰%(#.%F{red}.)➤%{%f%b%k%} '
+    PROMPT='%{%f%b%k%}${(e)RESULT_LINE}%{%b%f%}\
+╭─$(prompt_who) %{%B%F{black}%}»%{%b%f%} $(prompt_where)
+╰$(prompt_char)%{%f%b%k%} '
 
-    RPROMPT='%{$(echotc UP 1)%}%{%b%F{white}%}[%D{%H:%M:%S}]%{%b%f%}%{$(echotc DO 1)%}'
+    RPROMPT='%{$(echotc UP 1)%}$(prompt_clock)%{$(echotc DO 1)%}'
 }
 
 prompt_setup
