@@ -16,6 +16,8 @@ for FGs in '    m' '   1m' '  30m' '1;30m' '  31m' '1;31m' '  32m' \
 done
 echo
 
+[ "$1" != "-a" ] && exit 0
+
 echo -e "\n                 40m     41m     42m     43m\
      44m     45m     46m     47m";
 
