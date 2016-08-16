@@ -1,4 +1,4 @@
-# https://github.com/truefurby zsh theme
+# oh-my-zsh theme
 
 LAST_EXEC_TIME="0"
 LAST_RESULT="-1"
@@ -8,6 +8,11 @@ typeset -ghi _nextcmd _lastcmd
 hook_preexec() {
     timer=${timer:-$SECONDS}
     (( _nextcmd++ ))
+    
+    emulate -L zsh
+    setopt extended_glob
+    local title=${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}
+    print -Pn "\e]0;$title\a"
 }
 
 hook_precmd() {
@@ -22,6 +27,10 @@ hook_precmd() {
         LAST_EXEC_TIME="$(($SECONDS - $timer))"
         unset timer
     fi
+    
+    emulate -L zsh
+    local pts="$(basename $TTY) %~"
+    print -Pn "\e]0;$pts$title\a"
 }
 
 prompt_result_line() {
@@ -57,8 +66,7 @@ prompt_result_line() {
 prompt_who() {
     local user="%(#.%{%b%F{red}%}.%{%b%F{green}%})%n%{%f%b%}"
     local host="%{%b%F{cyan}%}%m%{%f%b%}"
-    local pts="%{%B%F{blue}%}%y%{%f%b%}"
-    echo "${user}@${host}:${pts}"
+    echo "${user}@${host}"
 }
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{magenta}%}"
@@ -67,12 +75,22 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%b%F{green}⊙"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%} "
 
 prompt_where() {
-    local cvs=$(git_prompt_info)
-    if [ -n "$cvs" ]; then
-        echo "%{%b%F{magenta}%}%1d%{%f%b%}:${cvs}"
-    else
-        echo "%{%b%F{yellow}%}%~%{%f%b%}"
+    local git_prompt=$(git_prompt_info)
+    local arrows="%{%b%f%}» "
+    local location="%{%b%F{yellow}%}%~%{%f%b%}"
+    
+    if [ -n "$git_prompt" ]; then
+        local arrows="%{%B%F{white}%}»%{%b%f%} "
+    	local repo=$(basename `git rev-parse --show-toplevel`)
+        location="%{%B%F{yellow}%}${repo}%{%f%b%}"
+        local folder=$(git rev-parse --show-prefix)
+    	if [ -n "$folder" ]; then
+            location+="%{%b%F{yellow}%}/${folder}%{%f%b%}"
+        fi
+        location+=" %{%B%F{white}%}›%{%b%f%} ${git_prompt}"
     fi
+    
+    echo "${arrows}${location}"
 }
 
 prompt_char() {
@@ -94,13 +112,11 @@ prompt_setup() {
     setopt prompt_subst
 
     PROMPT='%{%f%b%k%}${(e)RESULT_LINE}%{%b%f%}\
-╭─$(prompt_who) %{%B%F{black}%}»%{%b%f%} $(prompt_where)
+╭─$(prompt_who) $(prompt_where)
 ╰$(prompt_char)%{%f%b%k%} '
 
     RPROMPT='%{$(echotc UP 1)%}$(prompt_clock)%{$(echotc DO 1)%}'
 }
 
 prompt_setup
-
-#exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
 
