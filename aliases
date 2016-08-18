@@ -3,11 +3,11 @@
 alias rm='rm -vi'
 alias cp='cp -vi'
 alias mv='mv -vi'
-alias grep='grep -sn  --color --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
+alias grep='grep -s  --color --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 alias tail='tail -n 30'
 alias ls='ls --color'
 
-alias l='command ls -1B --group-directories-first'
+alias l='ls -1B --group-directories-first'
 alias la='ls -lhA'
 alias lb='ls -lhAB'
 alias install='sudo apt-get install -y'

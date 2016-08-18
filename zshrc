@@ -18,8 +18,8 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
     (( $3 >= 60 )) && elapsed="$((( $3 % 3600) / 60 ))m $elapsed"
     (( $3 >= 3600 )) && elapsed="$(( $3 / 3600 ))h $elapsed"
     [ $1 -eq 0 ] && \
-        notify-send -i "terminal" "$2" "exited cleanly (took $elapsed)" || \
-        notify-send -i "error" "$2" "exited with '$1' (took $elapsed)"
+        notify-send -i "terminal" "$2" "took $elapsed" || \
+        notify-send -i "error" "$2" "exit status <b>$1↵</b> <i>took $elapsed</i>"
 }
 
 plugins=(git pass screen sudo bgnotify)
