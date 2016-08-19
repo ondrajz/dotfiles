@@ -1,5 +1,5 @@
 [Configuration]
-FontName=Terminess Powerline 9
+FontName=Terminus 9
 MiscAlwaysShowTabs=FALSE
 MiscBell=FALSE
 MiscBordersDefault=TRUE
@@ -17,16 +17,16 @@ MiscTabCloseMiddleClick=TRUE
 MiscTabPosition=GTK_POS_TOP
 MiscHighlightUrls=TRUE
 MiscScrollAlternateScreen=TRUE
-BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
-BackgroundDarkness=0,950000
-TitleMode=TERMINAL_TITLE_REPLACE
+BackgroundDarkness=0.940000
 ScrollingLines=999999
 ScrollingOnOutput=FALSE
 TabActivityTimeout=1
-ColorPalette=#000000000000;#b333220b220b;#4e4e9a9a0606;#c4c4a0a00000;#3062699db333;#757550507b7b;#060698989a9a;#d7d7d7d7d7d7;#575757575757;#ffff28f628f6;#8a8ae2e23434;#fcfce9e94f4f;#6e14a2b9dc28;#adad7f7fa8a8;#41f2eb84eb84;#ffffffffffff
+ColorPalette=#000000000000;#bfff24792479;#4e4e9a9a0606;#c4c4a0a00000;#3062699db333;#757550507b7b;#060698989a9a;#d7d7d7d7d7d7;#575757575757;#f33230a430a4;#8a8ae2e23434;#fcfce9e94f4f;#6e14a2b9dc28;#bfff8cf2ba73;#41f2eb84eb84;#ffffffffffff
 ColorBackground=#08b70a3d0ccd
-ColorForeground=#b371c188d6ce
+ColorForeground=#ac22bb30d1eb
 ColorCursor=#38e383ab38e3
 ColorBoldUseDefault=FALSE
 ColorBold=#c36ed2e6ecae
+TitleMode=TERMINAL_TITLE_REPLACE
+BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
 
