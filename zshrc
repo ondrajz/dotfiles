@@ -23,7 +23,7 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
 <i>took: $elapsed</i>"
 }
 
-plugins=(git pass screen sudo bgnotify)
+plugins=(git pass screen sudo bgnotify per-directory-history)
 source $ZSH/oh-my-zsh.sh
 unsetopt share_history
 
