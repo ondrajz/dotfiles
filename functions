@@ -83,3 +83,9 @@ man() {
 	man "$@"
 }
 
+repl() {
+	IN=$(cat -)
+	[[ -n $1 ]] || { return `_err "$0: 'missing arguments'"`; }
+	echo $IN | sed -r "s/$1/$2/g"
+}
+

@@ -23,7 +23,7 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
 <i>took: $elapsed</i>"
 }
 
-plugins=(git pass screen sudo bgnotify per-directory-history)
+plugins=(go git pass screen sudo bgnotify per-directory-history zsh_reload)
 source $ZSH/oh-my-zsh.sh
 unsetopt share_history
 
@@ -34,3 +34,4 @@ unset file;
 
 #exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
 
+#[ -r "/usr/share/terminfo/x/xterm+256color" ] && export TERM="xterm+256color"

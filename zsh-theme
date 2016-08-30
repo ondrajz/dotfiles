@@ -2,8 +2,13 @@
 
 LAST_EXEC_TIME="0"
 LAST_RESULT="-1"
+#LAST_CMD=""
 
 typeset -ghi _nextcmd _lastcmd
+
+set_title() {
+    print -Pn "\e]0;$1\a"
+}
 
 hook_preexec() {
     timer=${timer:-$SECONDS}
@@ -11,8 +16,11 @@ hook_preexec() {
     
     emulate -L zsh
     setopt extended_glob
-    local title=${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}
-    print -Pn "\e]0;$title\a"
+    local t=${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}
+    set_title $t
+    #echo "PREEXEC: $t"
+    #notify-send -i error "last cmd" "$t"
+    LAST_CMD="$t"
 }
 
 hook_precmd() {
@@ -29,8 +37,9 @@ hook_precmd() {
     fi
     
     emulate -L zsh
-    local pts="$(basename $TTY) %~"
-    print -Pn "\e]0;$pts$title\a"
+    local t="%y %~"
+    [[ -n $LAST_CMD ]] && t+=" ➤ $LAST_CMD"
+    set_title "$t"
 }
 
 prompt_result_line() {
@@ -44,15 +53,15 @@ prompt_result_line() {
     fi
     
     if [ "$LAST_RESULT" -eq 0 ]; then
-        result="%{%b%F{green}%}$elapsed %{%B%F{green}%}$LAST_RESULT↵%{%f%b%}"
+        result="%{%B%F{blue}%}$elapsed %{%B%F{green}%}$LAST_RESULT↵%{%f%b%}"
     elif [ "$LAST_RESULT" -gt 0 ]; then
-        result="%{%b%F{red}%}$elapsed %{%B%F{red}%}$LAST_RESULT↵%{%f%b%}"
+        result="%{%B%F{blue}%}$elapsed %{%B%F{red}%}$LAST_RESULT↵%{%f%b%}"
     else
         RESULT_LINE=""
         return 0
     fi
 
-    local left=" %{%B%F{black}%}!%h%{%f%b%k%}"
+    local left="%{%B%F{black}%}!%h%{%f%b%k%} "
 
     local zero='%([BSUbfksu]|([FB]|){*})'
     local width=${#${(S%%)result//$~zero/}}
@@ -60,7 +69,7 @@ prompt_result_line() {
     local fill="\${(l:(($COLUMNS - ($width + $width2 + 1))):: :)}"
     local newline=$'\n'
 
-    RESULT_LINE="$left$fill$result$newline"
+    RESULT_LINE="$fill$left$result$newline"
 }
 
 prompt_who() {
