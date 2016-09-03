@@ -37,7 +37,7 @@ hook_precmd() {
     fi
     
     emulate -L zsh
-    local t="%y %~"
+    local t="%~ [%y]"
     [[ -n $LAST_CMD ]] && t+=" ➤ $LAST_CMD"
     set_title "$t"
 }
