@@ -2,7 +2,7 @@
 
 LAST_EXEC_TIME="0"
 LAST_RESULT="-1"
-#LAST_CMD=""
+LAST_CMD=""
 
 typeset -ghi _nextcmd _lastcmd
 
@@ -16,9 +16,9 @@ hook_preexec() {
     
     emulate -L zsh
     setopt extended_glob
-    local t=${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}
-    set_title $t
-    #echo "PREEXEC: $t"
+    local t="${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}"
+    [[ ! -n $t ]] && t="$LAST_CMD"
+    set_title "⌛  $t"
     #notify-send -i error "last cmd" "$t"
     LAST_CMD="$t"
 }
@@ -35,10 +35,10 @@ hook_precmd() {
         LAST_EXEC_TIME="$(($SECONDS - $timer))"
         unset timer
     fi
-    
     emulate -L zsh
-    local t="%~ [%y]"
-    [[ -n $LAST_CMD ]] && t+=" ➤ $LAST_CMD"
+    local t="%~"
+    [[ -n $LAST_CMD ]] && t+=" ⌚ $LAST_CMD"
+    t+=" [%y]"
     set_title "$t"
 }
 
