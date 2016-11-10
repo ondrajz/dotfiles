@@ -51,6 +51,8 @@ alias box='dropbox'
 alias fuck='sudo $(history -p \!\!)'
 #alias -g H='--help -h '
 
+alias myip='wget http://ipinfo.io/ip -qO -'
+
 # zsh is able to auto-do some kungfoo
 # depends on the SUFFIX :)
 if is-at-least 4.2.0; then
