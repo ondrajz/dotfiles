@@ -34,8 +34,9 @@ alias dotweb='dot -Tsvg -o > .tempdot.svg; exo-open .tempdot.svg'
 alias dotpng='dot -Tpng -o '
 alias syslog='/var/log/syslog'
 
-alias install='sudo apt-get install -y'
-alias purge='sudo apt-get purge -y'
+alias install='sudo apt install -y'
+alias purge='sudo apt purge -y'
+alias update='sudo apt update'
 
 alias goget='go get -v'
 alias gobuild='go build -v'
