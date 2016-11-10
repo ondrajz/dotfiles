@@ -8,8 +8,8 @@ NET_FILE="/tmp/ipinfo_${NET_IF}"
 EXT_FILE="/tmp/ipinfo_external"
 ETH_FILE="/tmp/ipinfo_local"
 
-ETH_CLR="darkcyan"
-EXT_CLR="lightskyblue"
+ETH_CLR="lightblue3"
+EXT_CLR="cyan2"
 
 ifconfig $NET_IF | tee "$NET_FILE" | grep -q inet; res=$?
 if [ $res -eq 0 ]; then

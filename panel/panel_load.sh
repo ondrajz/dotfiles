@@ -17,6 +17,6 @@ Duration () {
 UPTIME="$(Duration `cat /proc/uptime | awk -F"." '{print $1}'`)"
 LOAD=$(cat /proc/loadavg | awk '{ printf "%s / %s / %s", $1, $2, $3 }')
 
-echo "<txt>up: <span fgcolor='khaki'>$UPTIME</span>
-load: <span fgcolor='tan'>$LOAD</span></txt>"
+echo "<txt>up: <span fgcolor='khaki1'>$UPTIME</span>
+load: <span fgcolor='sandybrown'>$LOAD</span></txt>"
 
