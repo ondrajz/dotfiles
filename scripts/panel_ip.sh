@@ -3,10 +3,10 @@
 IPINFO="http://ipinfo.io/ip"
 
 NET_IF="enp4s0"
-NET_FILE="$HOME/.ipinfo_${NET_IF}"
+NET_FILE="/tmp/ipinfo_${NET_IF}"
 
-EXT_FILE="$HOME/.ipinfo_external"
-ETH_FILE="$HOME/.ipinfo_local"
+EXT_FILE="/tmp/ipinfo_external"
+ETH_FILE="/tmp/ipinfo_local"
 
 ETH_CLR="darkcyan"
 EXT_CLR="lightskyblue"
