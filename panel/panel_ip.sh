@@ -8,8 +8,8 @@ NET_FILE="/tmp/ipinfo_${NET_IF}"
 EXT_FILE="/tmp/ipinfo_external"
 ETH_FILE="/tmp/ipinfo_local"
 
-ETH_CLR="lightblue3"
-EXT_CLR="cyan2"
+ETH_CLR="darkgray"
+EXT_CLR="lightskyblue"
 
 ifconfig $NET_IF | tee "$NET_FILE" | grep -q inet; res=$?
 if [ $res -eq 0 ]; then
@@ -32,6 +32,6 @@ fi
 EXT=`cat $EXT_FILE`
 ETH=`cat $ETH_FILE`
 
-echo "<txt>ext: <span fgcolor='${EXT_CLR}'>${EXT}</span>
-loc: <span fgcolor='${ETH_CLR}'>${ETH}</span></txt>"
+echo "<txt>loc: <span fgcolor='${ETH_CLR}'>${ETH}</span>
+ext: <span fgcolor='${EXT_CLR}'>${EXT}</span></txt>"
 
