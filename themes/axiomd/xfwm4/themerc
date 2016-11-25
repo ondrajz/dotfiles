@@ -1,0 +1,12 @@
+# Axiomd xfwm theme by Rogier Koppejan.
+
+active_text_color=#C1C1C1
+button_offset=5
+button_spacing=5
+full_width_title=true
+inactive_text_color=#676767
+maximized_offset=2
+show_app_icon=true
+title_horizontal_offset=0
+title_vertical_offset_active=1
+title_vertical_offset_inactive=1
