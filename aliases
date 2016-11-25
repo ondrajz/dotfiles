@@ -3,11 +3,15 @@ alias rm='rm -vi'
 alias cp='cp -vi'
 alias mv='mv -vi'
 alias ls='ls -h --color'
-alias grep='grep --color -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash} --exclude="*~" -D skip'
+alias grep='grep --color=always -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash} --exclude="*~" -D skip'
+
 alias snmpget='snmpget -v 2c -c public'
 alias snmpset='snmpget -v 2c -c public'
 
-# quicks
+alias P='cd ~/Projects'
+alias W='cd ~/Work'
+alias D='cd ~/Downloads'
+
 alias h='history'
 alias c='command'
 alias t='tail -f'
@@ -49,6 +53,7 @@ alias curljg='curljson -X GET'
 alias termbin='nc termbin.com 9999'
 alias box='dropbox'
 alias fuck='sudo $(history -p \!\!)'
+alias myhome='sudo chown -R $USER:$USER ~'
 #alias -g H='--help -h '
 
 alias myip='wget http://ipinfo.io/ip -qO -'
