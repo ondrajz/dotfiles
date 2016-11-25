@@ -18,9 +18,10 @@ hook_preexec() {
     setopt extended_glob
     local t="${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}"
     [[ ! -n $t ]] && t="$LAST_CMD"
-    set_title "⌛  $t"
-    #notify-send -i error "last cmd" "$t"
     LAST_CMD="$t"
+    t="⏳  $t [%y]"
+    set_title "$t"
+    #notify-send -i error "last cmd" "$t"
 }
 
 hook_precmd() {
@@ -37,7 +38,7 @@ hook_precmd() {
     fi
     emulate -L zsh
     local t="%~"
-    [[ -n $LAST_CMD ]] && t+=" ⌚ $LAST_CMD"
+    [[ -n $LAST_CMD ]] && t+=" ⏲ $LAST_CMD"
     t+=" [%y]"
     set_title "$t"
 }
@@ -103,7 +104,11 @@ prompt_where() {
 }
 
 prompt_char() {
-    echo "%(#.%{%B%F{red}%}.%{%B%F{white}%})➤"
+    echo -n "%(#.%{%B%F{red}%Lx%}.%{%B%F{white}%}"
+    local l="$SHLVL"
+    for i in `seq 1 $l`; do
+	echo -n "➤"
+    done
 }
 
 prompt_clock() {
@@ -128,4 +133,5 @@ prompt_setup() {
 }
 
 prompt_setup
+
 
