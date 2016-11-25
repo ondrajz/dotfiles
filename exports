@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export DOTFILES="$HOME/.dotfiles"
+
+PATH="$PATH:$DOTFILES/bin"
+
