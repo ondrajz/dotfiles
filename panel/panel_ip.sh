@@ -2,7 +2,7 @@
 
 IPINFO="http://ipinfo.io/ip"
 
-NET_IF=$(route | grep '^default' | grep -o '[^ ]*$')
+NET_IF=$(route | grep '^default' | grep -o '[^ ]*$' | grep '^e')
 NET_FILE="/tmp/ipinfo_${NET_IF}"
 
 EXT_FILE="/tmp/ipinfo_external"
