@@ -51,18 +51,19 @@ prompt_result_line() {
         elapsed="$(( $LAST_EXEC_TIME % 60 ))s"
         (( $LAST_EXEC_TIME >= 60 )) && elapsed="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$elapsed"
         (( $LAST_EXEC_TIME >= 3600 )) && elapsed="$(( $LAST_EXEC_TIME / 3600 ))h$elapsed"
+	    elapsed+=" "
     fi
     
     if [ "$LAST_RESULT" -eq 0 ]; then
-        result="%{%B%F{blue}%}$elapsed %{%B%F{green}%}$LAST_RESULT↵%{%f%b%}"
+        result="%{%b%F{blue}%}$elapsed%{%b%F{green}%}$LAST_RESULT↵%{%f%b%}"
     elif [ "$LAST_RESULT" -gt 0 ]; then
-        result="%{%B%F{blue}%}$elapsed %{%B%F{red}%}$LAST_RESULT↵%{%f%b%}"
+        result="%{%b%F{blue}%}$elapsed%{%B%F{red}%}$LAST_RESULT↵%{%f%b%}"
     else
         RESULT_LINE=""
         return 0
     fi
 
-    local left="%{%B%F{black}%}!%h%{%f%b%k%} "
+    local left="%{%b%F{black}%}!%h%{%f%b%k%} "
 
     local zero='%([BSUbfksu]|([FB]|){*})'
     local width=${#${(S%%)result//$~zero/}}
@@ -91,10 +92,10 @@ prompt_where() {
     
     if [ -n "$git_prompt" ]; then
         local arrows="%{%B%F{white}%}»%{%b%f%} "
-    	local repo=$(basename `git rev-parse --show-toplevel`)
+        local repo=$(basename `git rev-parse --show-toplevel`)
         location="%{%B%F{yellow}%}${repo}%{%f%b%}"
         local folder=$(git rev-parse --show-prefix)
-    	if [ -n "$folder" ]; then
+        if [ -n "$folder" ]; then
             location+="%{%b%F{yellow}%}/${folder}%{%f%b%}"
         fi
         location+=" %{%B%F{white}%}›%{%b%f%} ${git_prompt}"
@@ -104,7 +105,7 @@ prompt_where() {
 }
 
 prompt_char() {
-    echo -n "%(#.%{%B%F{red}%Lx%}.%{%B%F{white}%}"
+    echo -n "%(#.%{%B%F{red}%Lx%}.%{%b%F{white}%}"
     local l="$SHLVL"
     for i in `seq 1 $l`; do
 	echo -n "➤"
@@ -112,7 +113,7 @@ prompt_char() {
 }
 
 prompt_clock() {
-    echo "[%{%B%f%}%D{%H:%M:%S}%{%b%f%}]"
+    echo "[%{%b%f%}%D{%H:%M:%S}%{%b%f%}]"
 }
 
 prompt_setup() {
@@ -126,12 +127,10 @@ prompt_setup() {
     setopt prompt_subst
 
     PROMPT='%{%f%b%k%}${(e)RESULT_LINE}%{%b%f%}\
-╭─$(prompt_who) $(prompt_where)
-╰$(prompt_char)%{%f%b%k%} '
+%{%b%f%}╭$(prompt_who) $(prompt_where)
+%{%b%f%}╰$(prompt_char)%{%f%b%k%} '
 
     RPROMPT='%{$(echotc UP 1)%}$(prompt_clock)%{$(echotc DO 1)%}'
 }
 
 prompt_setup
-
-
