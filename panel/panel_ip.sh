@@ -2,7 +2,7 @@
 
 IPINFO="http://ipinfo.io/ip"
 
-NET_IF=$(route | grep '^default' | grep -o '[^ ]*$' | grep '^e')
+NET_IF=$(route | grep '^default' | grep -o '[^ ]*$' | grep -v '^tun')
 NET_FILE="/tmp/ipinfo_${NET_IF}"
 
 EXT_FILE="/tmp/ipinfo_external"
@@ -32,6 +32,6 @@ fi
 EXT=`cat $EXT_FILE`
 ETH=`cat $ETH_FILE`
 
-echo "<txt>loc: <span fgcolor='${ETH_CLR}'>${ETH}</span>
+echo "<txt>$NET_IF: <span fgcolor='${ETH_CLR}'>${ETH}</span>
 pub: <span fgcolor='${EXT_CLR}'>${EXT}</span></txt>"
 
