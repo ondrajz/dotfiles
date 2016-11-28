@@ -80,9 +80,9 @@ prompt_who() {
     echo "${user}@${host}"
 }
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{magenta}%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%b%F{red}⊗"
-ZSH_THEME_GIT_PROMPT_CLEAN="%b%F{green}⊙"
+ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%F{magenta}%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%b%F{red} ✘"
+ZSH_THEME_GIT_PROMPT_CLEAN="%b%F{green} ✔"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%} "
 
 prompt_where() {
@@ -93,12 +93,12 @@ prompt_where() {
     if [ -n "$git_prompt" ]; then
         local arrows="%{%B%F{white}%}»%{%b%f%} "
         local repo=$(basename `git rev-parse --show-toplevel`)
-        location="%{%B%F{yellow}%}${repo}%{%f%b%}"
+        location="%{%b%F{yellow}%}${repo}%{%f%b%}"
         local folder=$(git rev-parse --show-prefix)
         if [ -n "$folder" ]; then
             location+="%{%b%F{yellow}%}/${folder}%{%f%b%}"
         fi
-        location+=" %{%B%F{white}%}›%{%b%f%} ${git_prompt}"
+        location+=" %{%b%F{white}%}→%{%b%f%} ${git_prompt}"
     fi
     
     echo "${arrows}${location}"
@@ -113,7 +113,7 @@ prompt_char() {
 }
 
 prompt_clock() {
-    echo "[%{%b%f%}%D{%H:%M:%S}%{%b%f%}]"
+    echo "%{%b%f%K{black}%} %D{%H:%M:%S} %{%b%f%k%}"
 }
 
 prompt_setup() {
