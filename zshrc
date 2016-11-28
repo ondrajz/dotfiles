@@ -11,6 +11,7 @@ CASE_SENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 HIST_STAMPS="mm/dd/yyyy"
 DISABLE_AUTO_TITLE="true"
+DISABLE_UPDATE_PROMPT="true"
 
 bgnotify_threshold=10
 function bgnotify_formatted { # exit_status, command, elapsed_sec
