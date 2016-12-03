@@ -114,7 +114,7 @@ prompt_char() {
 }
 
 prompt_clock() {
-    local clock="%{%b%F{white}%}%D{%H:%M}"
+    local clock="%{%b%f%}[%D{%H:%M}]"
     echo "${clock}%{%b%f%}"
 }
 
@@ -152,8 +152,8 @@ prompt_setup() {
     setopt prompt_subst
 
     PROMPT='%{%K{black}%}${(e)RESULT_LINE}\
-%{%b%k%f%}┌[$(prompt_clock)] $(prompt_who) $(prompt_where)
-%{%b%k%f%}┕$(prompt_char) %{%b%k%f%}'
+%{%b%k%f%}$(prompt_clock) $(prompt_who) $(prompt_where)
+%{%b%k%f%}$(prompt_char) %{%b%k%f%}'
     RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}'
 }
 
