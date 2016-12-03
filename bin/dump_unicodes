@@ -1,9 +1,26 @@
 #!/bin/bash
+la=-1
+lb=-1
 x=(0 1 2 3 4 5 6 7 8 9 A B C D E F)
 for a in {0..15}; do for b in {0..15}; do for c in {0..15}; do
-        [[ $a -eq 0 && $b -eq 0 && $c -lt 2 ]] && continue
-        [[ $c -eq 0 ]] && echo; echo -en "\n\n${x[$a]}${x[$b]}${x[$c]}X: "
-        for d in {0..15}; do
+            [[ $a -eq 0 && $b -eq 0 && $c -lt 2 ]] && continue
+            if [ "$1" != "-a" ]; then
+                [[ $a -eq 0x0 && $b -ge 0x0 && $b -le 0x2 ]] ||
+                [[ $a -eq 0x0 && $b -ge 0x4 && $b -le 0xf ]] ||
+                [[ $a -eq 0x1 && $b -ge 0x0 && $b -le 0xf ]] ||
+                [[ $a -eq 0x2 && $b -ge 0xf && $b -le 0xf ]] ||
+                [[ $a -eq 0x3 && $b -ge 0x1 && $b -le 0xf ]] ||
+                [[ $a -ge 0x4 && $a -le 0xd ]] ||
+                [[ $a -eq 0xe && $b -ge 0x7 && $b -le 0xf ]] ||
+                [[ $a -eq 0xf && $b -ge 0x0 && $b -le 0xd ]] &&
+                continue
+            fi
+            [[ $a -ne $la ]] && echo -ne "${x[$a]}xxx\n\n"; la=$a
+            [[ $b -ne $lb ]] && echo -ne "  ${x[$a]}${x[$b]}xx\n\n"; lb=$b
+            echo -en "    ${x[$a]}${x[$b]}${x[$c]}x:\t"
+            for d in {0..15}; do
                 echo -en "\u${x[$a]}${x[$b]}${x[$c]}${x[$d]}   "
-        done
+            done
+            echo -en "\n\n"
 done; done; done
+
