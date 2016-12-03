@@ -92,7 +92,7 @@ prompt_result_line() {
 prompt_who() {
     local user="%(#.%{%b%F{red}%}.%{%b%F{green}%})%n"
     local host="%{%b%F{cyan}%}%m"
-    echo "${user}%{%b%f%}@${host}%{%b%f%}"
+    echo "${user}%{%b%F{white}%}@${host}%{%b%f%}"
 }
 
 prompt_where() {
@@ -100,9 +100,9 @@ prompt_where() {
     local git_info=$(git_prompt_info)
     if [ -n "$git_info" ]; then
         local repo=$(basename `git rev-parse --show-toplevel`)
-        location+=" %{%b%f%} %{%b%F{magenta}%}${repo} ${git_info}"
+        location+=" %{%b%F{white}%} %{%b%F{magenta}%}${repo} ${git_info}"
     fi
-    echo "${location}%{%f%b%}"
+    echo "${location}%{%f%k%b%}"
 }
 
 prompt_char() {
@@ -110,11 +110,11 @@ prompt_char() {
     for i in `seq 1 "$SHLVL"`; do
         c+="➤"
     done
-    echo "%{%b%F{white}%}${c}%{%b%f%}"
+    echo "%{%b%f%}${c}%{%b%f%}"
 }
 
 prompt_clock() {
-    local clock="%{%b%f%}[%D{%H:%M}]"
+    local clock="%{%b%K{black}%f%} %D{%H:%M} "
     echo "${clock}%{%b%f%}"
 }
 
@@ -152,9 +152,9 @@ prompt_setup() {
     setopt prompt_subst
 
     PROMPT='%{%K{black}%}${(e)RESULT_LINE}\
-%{%b%k%f%}$(prompt_clock) $(prompt_who) $(prompt_where)
+%{%b%k%f%} $(prompt_who) $(prompt_where)
 %{%b%k%f%}$(prompt_char) %{%b%k%f%}'
-    RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}'
+    RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 7)$(prompt_clock)%}'
 }
 
 prompt_setup
