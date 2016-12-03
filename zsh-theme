@@ -6,6 +6,12 @@ LAST_CMD=""
 
 typeset -ghi _nextcmd _lastcmd
 
+_debug() {
+    [ -z "$DEBUG" ] && return 0
+    local icon=${icon:-" "}
+    notify-send -t 5000 -i "$icon" "$1" "$2"
+}
+
 set_title() {
     local t="$1 [%y]"
     print -Pn "\e]0;$t\a"
@@ -22,7 +28,7 @@ hook_preexec() {
     [[ ! -n $t ]] && t="$LAST_CMD"
     LAST_CMD="$t"
 
-    [ -n "$DEBUG_ZSHPRE" ] && notify-send -t 3000 -i info "preEXEC #$_nextcmd" "exec cmds: '$t' ('$1')"
+     _debug "preEXEC #$_nextcmd" "exec cmds: '$t' ('$1')"
 
     set_title "⏳  $t"
 }
@@ -42,86 +48,97 @@ hook_precmd() {
         unset timer
     fi
 
-    [ -n "$DEBUG_ZSHPRE" ] && notify-send -t 3000 -i warn "preCMD (${sLAST_EXEC_TIME}s)" "last cmd: '$LAST_CMD' (result $LAST_RESULT)"
+    _debug "preCMD (${sLAST_EXEC_TIME}s)" "last cmd: '$LAST_CMD' (result $LAST_RESULT)"
 
     emulate -L zsh
-    local t="%~"
+    local t="%3~"
     [[ -n $LAST_CMD ]] && t+=" ⏲ $LAST_CMD"
     set_title "$t"
 }
 
 prompt_result_line() {
-    local result
-    local elapsed
-
-    if [ "$LAST_EXEC_TIME" -gt 0 ]; then
-        elapsed="$(( $LAST_EXEC_TIME % 60 ))s"
-        (( $LAST_EXEC_TIME >= 60 )) && elapsed="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$elapsed"
-        (( $LAST_EXEC_TIME >= 3600 )) && elapsed="$(( $LAST_EXEC_TIME / 3600 ))h$elapsed"
-	    elapsed+=" "
-    fi
-
-    if [ "$LAST_RESULT" -eq 0 ]; then
-        result="%{%b%F{blue}%}$elapsed%{%b%F{green}%}$LAST_RESULT↵%{%f%b%}"
-    elif [ "$LAST_RESULT" -gt 0 ]; then
-        result="%{%b%F{blue}%}$elapsed%{%B%F{red}%}$LAST_RESULT↵%{%f%b%}"
-    else
+    if [ "$LAST_RESULT" = "-1" ]; then
+         _debug "RESULT_LINE" "empty"
         RESULT_LINE=""
         return 0
     fi
 
-    local left="%{%B%F{black}%}!%h%{%f%b%k%} "
+    local left=" %{%B%F{black}%}!%h"
+    local right=""
+
+    if [ "$LAST_EXEC_TIME" -gt 0 ]; then
+        local e="$(( $LAST_EXEC_TIME % 60 ))s"
+        (( $LAST_EXEC_TIME >= 60 )) && e="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$e"
+        (( $LAST_EXEC_TIME >= 3600 )) && e="$(( $LAST_EXEC_TIME / 3600 ))h$e"
+        right+="%{%B%K{black}%F{blue}%}$e "
+    fi
+    if [ "$LAST_RESULT" -eq 0 ]; then
+        right+="%{%b%K{black}%F{green}%}$LAST_RESULT↵"
+    else
+        right+="%{%B%K{black}%F{red}%}$LAST_RESULT↵"
+    fi
 
     local zero='%([BSUbfksu]|([FB]|){*})'
-    local width=${#${(S%%)result//$~zero/}}
-    local width2=${#${(S%%)left//$~zero/}}
-    local fill="\${(l:(($COLUMNS - ($width + $width2 + 1))):: :)}"
+    local lwidth=${#${(S%%)left//$~zero/}}
+    local rwidth=${#${(S%%)right//$~zero/}}
+    local fill="\${(l:(($COLUMNS - ($lwidth + $rwidth + 1))):: :)}"
     local newline=$'\n'
 
-    RESULT_LINE="$fill$left$result$newline"
+    _debug "RESULT_LINE" "lwidth=$lwidth rwidth=$rwidth"
+
+    RESULT_LINE="${left}${fill}${right}%E${newline}"
 }
 
 prompt_who() {
-    local user="%(#.%{%b%F{red}%}.%{%b%F{green}%})%n%{%f%b%}"
-    local host="%{%b%F{cyan}%}%m%{%f%b%}"
-    echo "${user}@${host}"
+    local user="%(#.%{%b%F{red}%}.%{%b%F{green}%})%n"
+    local host="%{%b%F{cyan}%}%m"
+    echo "${user}%{%b%f%}@${host}%{%b%f%}"
 }
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%F{magenta}%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%b%F{red} ✘"
-ZSH_THEME_GIT_PROMPT_CLEAN="%b%F{green} ✔"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%}"
-
 prompt_where() {
-    local git_prompt=$(git_prompt_info)
-    local arrows="%{%b%f%}» "
-    local location="%{%b%F{yellow}%}%~%{%f%b%}"
-    
-    if [ -n "$git_prompt" ]; then
-        local arrows="%{%B%F{white}%}»%{%b%f%} "
+    local location="%{%b%F{yellow}%}%3~"
+    local git_info=$(git_prompt_info)
+    if [ -n "$git_info" ]; then
         local repo=$(basename `git rev-parse --show-toplevel`)
-        location="%{%b%F{yellow}%}${repo}%{%f%b%}"
-        local folder=$(git rev-parse --show-prefix)
-        if [ -n "$folder" ]; then
-            location+="%{%b%F{yellow}%}/${folder}%{%f%b%}"
-        fi
-        local githash=$(git show -s --format=%h)
-        location+=" %{%b%F{white}%}→%{%b%f%} ${git_prompt} %{%B%F{magenta}%}$githash%{%b%f%}"
+        location+=" %{%b%f%} %{%b%F{magenta}%}${repo} ${git_info}"
     fi
-    
-    echo "${arrows}${location}"
+    echo "${location}%{%f%b%}"
 }
 
 prompt_char() {
-    echo -n "%(#.%{%B%F{red}%Lx%}.%{%b%F{white}%}"
-    local l="$SHLVL"
-    for i in `seq 1 $l`; do
-	echo -n "➤"
+    local c
+    for i in `seq 1 "$SHLVL"`; do
+        c+="➤"
     done
+    echo "%{%b%F{white}%}${c}%{%b%f%}"
 }
 
 prompt_clock() {
-    echo "%{%b%f%K{black}%} %D{%H:%M:%S} %{%b%f%k%}"
+    local clock="%{%b%F{white}%}%D{%H:%M}"
+    echo "${clock}%{%b%f%}"
+}
+
+ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%F{magenta}%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{%f%b%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{%B%F{red}%} ✘"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{%B%F{green}%} ✔"
+
+ZSH_THEME_GIT_PROMPT_ADDED="%{%b%F{green}%}◉ "
+ZSH_THEME_GIT_PROMPT_MODIFIED="%{%b%F{yellow}%}⛤ "
+ZSH_THEME_GIT_PROMPT_DELETED="%{%b%F{red}%}⛔ "
+ZSH_THEME_GIT_PROMPT_RENAMED="%{%b%F{blue}%} "
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{%b%F{cyan}%}§ "
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%b%F{white}%}◌ "
+
+prompt_info() {
+    local info=""
+    local git_status=$(git_prompt_status)
+    if [ -n "$git_status" ]; then
+        info+="%{%b%f%}${git_status} "
+    fi
+    local hash=$(git show -s --format=%h 2>/dev/null)
+    [ -n "$hash" ] && info+="%{%b%F{blue}%}${hash}"
+    echo "${info}%{%b%f%}"
 }
 
 prompt_setup() {
@@ -134,11 +151,10 @@ prompt_setup() {
 
     setopt prompt_subst
 
-    PROMPT='%{%f%b%k%}${(e)RESULT_LINE}%{%b%f%}\
-%{%b%f%} $(prompt_who) $(prompt_where)
-%{%b%f%}$(prompt_char)%{%f%b%k%} '
-
-    RPROMPT='%{$(echotc UP 1)%}$(prompt_clock)%{$(echotc DO 1)%}'
+    PROMPT='%{%K{black}%}${(e)RESULT_LINE}\
+%{%b%k%f%}┌[$(prompt_clock)] $(prompt_who) $(prompt_where)
+%{%b%k%f%}┕$(prompt_char) %{%b%k%f%}'
+    RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}'
 }
 
 prompt_setup
