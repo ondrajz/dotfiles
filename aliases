@@ -24,6 +24,7 @@ alias dud='du -d 1 -h'
 alias duf='du -sh * | sort -h'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
+alias wh='which -a'
 
 # handy
 alias fuck='sudo $(history -p \!\!)'
