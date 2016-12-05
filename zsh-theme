@@ -154,6 +154,7 @@ prompt_setup() {
     PROMPT='${(e)RESULT_LINE}\
 %{%b%K{black}%f%}$(prompt_who) $(prompt_where)
 %{%b%k%f%}$(prompt_char) %{%b%k%f%}'
+    PROMPT2='> '
     RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 8)$(prompt_clock)%}'
 }
 
