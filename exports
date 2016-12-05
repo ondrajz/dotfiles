@@ -2,5 +2,9 @@
 
 export DOTFILES="$HOME/.dotfiles"
 
+export LANG="en_US.UTF-8"
+export EDITOR="nano"
+export MANPATH="/usr/local/man:$MANPATH"
+
 PATH="$PATH:$DOTFILES/bin"
 

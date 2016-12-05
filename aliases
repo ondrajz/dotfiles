@@ -1,42 +1,47 @@
-# defaults
-alias rm='rm -vi'
-alias cp='cp -vi'
-alias mv='mv -vi'
-alias ls='ls -h --color'
-alias grep='grep --color=auto -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash,.cache} --exclude="*~" -D skip'
-
-alias snmpget='snmpget -v 2c -c public'
-alias snmpset='snmpget -v 2c -c public'
-
+# aliases
+alias D='cd ~/Downloads'
 alias P='cd ~/Projects'
 alias W='cd ~/Work'
-alias D='cd ~/Downloads'
 
-alias h='history'
 alias c='command'
-alias t='tail -f'
+alias h='history'
+alias i='which'
 alias l='ls --color -1hGBF --group-directories-first'
+alias t='tail -f'
+
+# defaults
+alias cp='cp -vi'
+alias grep='grep --color=auto -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash,.cache} --exclude="*~" -D skip'
+alias mv='mv -vi'
+alias rm='rm -vi'
+alias ls='ls -h --color'
 
 # shortcuts
-alias ll='ls -lBF'
 alias la='ls -lA'
 alias lb='ls -lAB'
-
+alias ll='ls -lBF'
 alias dud='du -d 1 -h'
 alias duf='du -sh * | sort -h'
-
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 
-alias hgrep="fc -El 0 | grep"
+# handy
+alias fuck='sudo $(history -p \!\!)'
+alias hgrep='fc -El 0 | grep'
 alias rgrep='grep -R -n -H -C 5 '
-
-alias wgeto='wget -q -O -'
 alias cutcol='cut -c1-$COLUMNS'
+alias wgeto='wget -q -O -'
+alias myhome='sudo chown -R $USER:$USER ~'
 
-alias dotweb='dot -Tsvg -o > .tempdot.svg; exo-open .tempdot.svg'
-alias dotpng='dot -Tpng -o '
-alias syslog='/var/log/syslog'
+# other
+alias snmpget='snmpg -v 2c -c public'
+alias snmpset='snmps -v 2c -c public'
+
+alias curljson='curl -H "Accept: application/json" -H "Content-Type: application/json"'
+alias curljp='curljson -X POST'
+alias curljg='curljson -X GET'
+
+alias dotsvg='dot -Tsvg -o > /tmp/tempdot.svg && exo-open /tmp/tempdot.svg'
 
 alias install='sudo apt install -y'
 alias purge='sudo apt purge -y'
@@ -44,17 +49,8 @@ alias update='sudo apt update'
 
 alias goget='go get -v'
 alias gobuild='go build -v'
-alias gotest='~/.dotfiles/color-go-test.sh -v'
-
-alias curljson='curl -H "Accept: application/json" -H "Content-Type: application/json"'
-alias curljp='curljson -X POST'
-alias curljg='curljson -X GET'
 
 alias termbin='nc termbin.com 9999'
-alias box='dropbox'
-alias fuck='sudo $(history -p \!\!)'
-alias myhome='sudo chown -R $USER:$USER ~'
-#alias -g H='--help -h '
 
 alias myip='wget http://ipinfo.io/ip -qO -'
 
