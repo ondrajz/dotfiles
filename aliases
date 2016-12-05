@@ -3,7 +3,7 @@ alias rm='rm -vi'
 alias cp='cp -vi'
 alias mv='mv -vi'
 alias ls='ls -h --color'
-alias grep='grep --color=always -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash} --exclude="*~" -D skip'
+alias grep='grep --color=auto -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash,.cache} --exclude="*~" -D skip'
 
 alias snmpget='snmpget -v 2c -c public'
 alias snmpset='snmpget -v 2c -c public'
