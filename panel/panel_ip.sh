@@ -19,7 +19,7 @@ else
     echo "error $res" > $ETH_FILE
 fi
 
-wget $IPINFO -qO $EXT_FILE; res=$?
+curl $IPINFO > $EXT_FILE; res=$?
 if [ $res -ne 0 ]; then
     EXT_CLR="red"
     ERR="error $res"
