@@ -24,6 +24,8 @@ hook_preexec() {
     emulate -L zsh
     setopt extended_glob
 
+    echo -en "\e[0;0;0m"
+
     local t="${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}"
     [[ ! -n $t ]] && t="$LAST_CMD"
     LAST_CMD="$t"
