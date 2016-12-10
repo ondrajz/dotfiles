@@ -125,12 +125,12 @@ prompt_clock() {
     echo "${clock}%{%b%k%f%}"
 }
 
-ZSH_THEME_GIT_PROMPT_ADDED="%{%b%K{black}%F{green}%}◉ "
-ZSH_THEME_GIT_PROMPT_MODIFIED="%{%b%K{black}%F{yellow}%}⛤ "
+ZSH_THEME_GIT_PROMPT_ADDED="%{%b%K{black}%F{green}%}✚ "
+ZSH_THEME_GIT_PROMPT_MODIFIED="%{%b%K{black}%F{yellow}%}✎ "
 ZSH_THEME_GIT_PROMPT_DELETED="%{%b%K{black}%F{red}%}⛔ "
-ZSH_THEME_GIT_PROMPT_RENAMED="%{%b%K{black}%F{blue}%} "
-ZSH_THEME_GIT_PROMPT_UNMERGED="%{%b%K{black}%F{cyan}%}§ "
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%b%K{black}%F{white}%}◌ "
+ZSH_THEME_GIT_PROMPT_RENAMED="%{%b%K{black}%F{blue}%}◭ "
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{%b%K{black}%F{cyan}%}⛖ "
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%b%K{black}%F{white}%}❓ "
 
 prompt_info() {
     local info=""
