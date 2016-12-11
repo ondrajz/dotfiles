@@ -13,24 +13,29 @@ _debug() {
 }
 
 set_title() {
-    local t="$1 [%y]"
+    local t="❐ %y"
+    [ -n "$1" ] && t="$1  $t"
     print -Pn "\e]0;$t\a"
 }
 
 hook_preexec() {
-    timer=${timer:-$SECONDS}
-    (( _nextcmd++ ))
-
     emulate -L zsh
     setopt extended_glob
 
+    #local cmd="${1[(wr)^(*=*|sudo|ssh|-*)]}"
+    #echo "dbg: '${1}' '${2}' last: $LAST_CMD"
+
+    timer=${timer:-$SECONDS}
+    (( _nextcmd++ ))
+
     echo -en "\e[0;0;0m"
 
-    local t="${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}"
-    [[ ! -n $t ]] && t="$LAST_CMD"
+    local t="${2[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}"
+    [[ -z $t ]] && t="$LAST_CMD"
+
     LAST_CMD="$t"
 
-     _debug "preEXEC #$_nextcmd" "exec cmds: '$t' ('$1')"
+     _debug "#$_nextcmd PREEXEC" "exec: $t (${(q)1})"
 
     set_title "⏳  $t"
 }
@@ -50,11 +55,15 @@ hook_precmd() {
         unset timer
     fi
 
-    _debug "preCMD (${sLAST_EXEC_TIME}s)" "last cmd: '$LAST_CMD' (result $LAST_RESULT)"
+    _debug "PRECMD (${sLAST_EXEC_TIME}s)" "last: '$LAST_CMD' ($LAST_RESULT)"
 
     emulate -L zsh
-    local t="%3~"
+    local t=""
+    if [ "$(pwd)" != "$HOME" ]; then
+        t="%3~"
+    fi
     [[ -n $LAST_CMD ]] && t+=" ⏲ $LAST_CMD"
+
     set_title "$t"
 }
 
@@ -65,7 +74,7 @@ prompt_result_line() {
         return 0
     fi
 
-    local left=" %{%B%F{black}%}!%h"
+    local left="%{%B%F{black}%}!%h "
     local right=""
 
     if [ "$LAST_EXEC_TIME" -gt 0 ]; then
@@ -86,9 +95,9 @@ prompt_result_line() {
     local fill="\${(l:(($COLUMNS - ($lwidth + $rwidth + 1))):: :)}"
     local newline=$'\n'
 
-    _debug "RESULT_LINE" "lwidth=$lwidth rwidth=$rwidth"
+    #_debug "RESULT_LINE" "lwidth=$lwidth rwidth=$rwidth"
 
-    RESULT_LINE="${left}${fill}${right}%E${newline}"
+    RESULT_LINE="${fill}${left}${right}%E${newline}"
 }
 
 prompt_who() {
@@ -97,34 +106,42 @@ prompt_who() {
     echo "${user}%{%b%K{black}%f%}@${host}%{%b%K{black}%f%}"
 }
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{%B%K{black}%F{magenta}%}"
+ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%K{black}%F{blue}%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{%b%K{black}%f%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{%B%K{black}%F{red}%} ✘"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{%B%K{black}%F{green}%} ✔"
 
 prompt_where() {
-    local location="%{%b%K{black}%F{yellow}%}%3~"
+    local location="%{%b%K{black}%F{yellow}%}%3~ "
     local git_info=$(git_prompt_info)
     if [ -n "$git_info" ]; then
-        local repo=$(basename `git rev-parse --show-toplevel`)
-        location+=" %{%b%K{black}%F{white}%} %{%b%K{black}%F{magenta}%}${repo} ${git_info} "
+        local toplevel="$(git rev-parse --show-toplevel)"
+        local repo="%{%B%K{black}%F{magenta}%}$(basename $toplevel)"
+        local prefix="$(git rev-parse --show-prefix)"
+        [ -n "$prefix" ] && repo+="%{%b%K{black}%F{magenta}%}/$prefix"
+        #location="%{%b%K{black}%F{magenta}%}${repo}"
+        #location="%{%b%K{black}%F{yellow}%}$prefix"
+        #if [[ "$toplevel" != "$(pwd)" ]]; then
+            location="%{%b%K{black}%F{magenta}%}$repo %{%b%K{black}%F{white}%} "
+        #fi
+        location+="%{%b%K{black}%F{white}%}${git_info} "
     fi
     local hash=$(git show -s --format=%h 2>/dev/null)
-    [ -n "$hash" ] && location+="%{%b%K{black}%F{blue}%}${hash}"
+    [ -n "$hash" ] && location+="%{%B%K{black}%F{blue}%}${hash}"
     echo "${location}%E%{%b%k%f%}"
 }
 
 prompt_char() {
     local c
     for i in `seq 1 "$SHLVL"`; do
-        c+="➤"
+        c+="$1"
     done
     echo "%{%b%F{white}%}${c}%{%b%f%}"
 }
 
 prompt_clock() {
-    local clock="%{%b%k%f%}%D{%H:%M:%S}%{%b%k%f%}"
-    echo "${clock}%{%b%k%f%}"
+    local clock="%{%B%k%F{black}%S%} %D{%H:%M:%S} %{%b%k%f%}"
+    echo -n "${clock}%{%b%k%f%s%}"
 }
 
 ZSH_THEME_GIT_PROMPT_ADDED="%{%b%K{black}%F{green}%}✚ "
@@ -138,8 +155,11 @@ prompt_info() {
     local info=""
     local git_status=$(git_prompt_status)
     if [ -n "$git_status" ]; then
+        #local repo=$(basename `git rev-parse --show-toplevel`)
         info+="%{%b%K{black}%f%}${git_status}"
     fi
+    #local hash=$(git show -s --format=%h 2>/dev/null)
+    #[ -n "$hash" ] && info+="%{%b%K{black}%f%}sha:%{%B%K{black}%F{black}%}${hash}"
     echo "${info}%{%b%k%f%}"
 }
 
@@ -155,9 +175,9 @@ prompt_setup() {
 
     PROMPT='${(e)RESULT_LINE}\
 %{%b%K{black}%f%} $(prompt_who) $(prompt_where)
-%{%b%k%f%}$(prompt_char) %{%b%k%F{white}%}'
-    PROMPT2='> '
-    RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 8)$(prompt_clock)%}'
+%{%b%k%f%}$(prompt_char ➤) %{%b%k%F{white}%}'
+    PROMPT2='➣ '
+    RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 10)$(prompt_clock)%}'
 }
 
 prompt_setup
