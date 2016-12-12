@@ -13,8 +13,8 @@ _debug() {
 }
 
 set_title() {
-    local t="❐ %y"
-    [ -n "$1" ] && t="$1  $t"
+    local t="🗔 %y"
+    [ -n "$1" ] && t="$1  $t"
     print -Pn "\e]0;$t\a"
 }
 
@@ -37,7 +37,7 @@ hook_preexec() {
 
      _debug "#$_nextcmd PREEXEC" "exec: $t (${(q)1})"
 
-    set_title "⏳  $t"
+    set_title "⌛  $t"
 }
 
 hook_precmd() {
@@ -58,11 +58,16 @@ hook_precmd() {
     _debug "PRECMD (${sLAST_EXEC_TIME}s)" "last: '$LAST_CMD' ($LAST_RESULT)"
 
     emulate -L zsh
+
     local t=""
-    if [ "$(pwd)" != "$HOME" ]; then
-        t="%3~"
+    if [[ -n $LAST_CMD && "$LAST_RESULT" != "-1" ]]; then
+        [ "$res" -eq 0 ] && t+="✅  " || t+="❎ "
+        t+="$LAST_CMD"
     fi
-    [[ -n $LAST_CMD ]] && t+=" ⏲ $LAST_CMD"
+    if [ "$(pwd)" != "$HOME" ]; then
+        [ -n "$t" ] && t+="  "
+        t+="🗁 %3~"
+    fi
 
     set_title "$t"
 }
@@ -74,19 +79,19 @@ prompt_result_line() {
         return 0
     fi
 
-    local left="%{%B%F{black}%}!%h "
+    local left=" %{%b%F{black}%}%h"
     local right=""
 
     if [ "$LAST_EXEC_TIME" -gt 0 ]; then
         local e="$(( $LAST_EXEC_TIME % 60 ))s"
         (( $LAST_EXEC_TIME >= 60 )) && e="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$e"
         (( $LAST_EXEC_TIME >= 3600 )) && e="$(( $LAST_EXEC_TIME / 3600 ))h$e"
-        right+="%{%B%F{blue}%}$e "
+        right+="%{%b%F{blue}%}⏲ $e "
     fi
     if [ "$LAST_RESULT" -eq 0 ]; then
-        right+="%{%b%F{green}%}$LAST_RESULT↵"
+        right+="%{%b%F{green}%}⏎ $LAST_RESULT"
     else
-        right+="%{%B%F{red}%}$LAST_RESULT↵"
+        right+="%{%B%F{red}%}⏎ $LAST_RESULT"
     fi
 
     local zero='%([BSUbfksu]|([FB]|){*})'
@@ -97,7 +102,7 @@ prompt_result_line() {
 
     #_debug "RESULT_LINE" "lwidth=$lwidth rwidth=$rwidth"
 
-    RESULT_LINE="${fill}${left}${right}%E${newline}"
+    RESULT_LINE="${left}${fill}${right}%E${newline}"
 }
 
 prompt_who() {
