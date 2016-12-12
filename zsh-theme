@@ -145,7 +145,7 @@ prompt_char() {
 }
 
 prompt_clock() {
-    local clock="%{%B%k%F{black}%S%} %D{%H:%M:%S} %{%b%k%f%}"
+    local clock="%{%b%k%f%}⏰ %D{%H:%M:%S}%{%b%k%f%}"
     echo -n "${clock}%{%b%k%f%s%}"
 }
 
