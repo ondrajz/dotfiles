@@ -12,13 +12,15 @@ ZSH_THEME="truefurby"
 
 bgnotify_threshold=10
 function bgnotify_formatted { # exit_status, command, elapsed_sec
-    elapsed="$(( $3 % 60 ))s"
-    (( $3 >= 60 )) && elapsed="$((( $3 % 3600) / 60 ))m $elapsed"
-    (( $3 >= 3600 )) && elapsed="$(( $3 / 3600 ))h $elapsed"
-    [ $1 -eq 0 ] && \
-        notify-send -i "terminal" "cmd: '$2'" "took $elapsed" || \
-        notify-send -i "error" "cmd: '$2'" "exit status: <b>$1</b>
-<i>took: $elapsed</i>"
+    elapsed="$(( $3 % 60 )) sec"
+    (( $3 >= 60 )) && elapsed="$((( $3 % 3600) / 60 )) min $elapsed"
+    (( $3 >= 3600 )) && elapsed="$(( $3 / 3600 )) hours $elapsed"
+    if [ $1 -eq 0 ]; then
+        notify-send -i terminal "'${2}'" "<i>$elapsed</i>"
+    else
+        notify-send -i error "'${2}'" "<b>↵ ${1}</b>
+<i>$elapsed</i>"
+    fi
 }
 
 plugins=(go git pass screen sudo bgnotify per-directory-history zsh_reload pip compleat debian django)
