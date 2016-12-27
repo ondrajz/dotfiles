@@ -30,6 +30,8 @@ if [ $res -ne 0 ]; then
 fi
 
 EXT=`cat $EXT_FILE`
+EXTH=`grep $EXT /etc/hosts | awk '{print $2}'`
+[ -n "$EXTH" ] && EXT="$EXTH"
 ETH=`cat $ETH_FILE`
 
 echo "<txt>$NET_IF: <span fgcolor='${ETH_CLR}'>${ETH}</span>
