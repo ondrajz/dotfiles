@@ -20,7 +20,7 @@ _err() {
 
 bk() {
     local file="$1"
-    cp -fb $file $file
+    cp -S '.bk' -fb $file $file
 }
 
 newsh() {
@@ -30,9 +30,9 @@ newsh() {
     if [[ $script != *".sh" ]]; then
         script="$script".sh
     fi
-    if [ -a "$script" ]; then 
+    if [ -a "$script" ]; then
         return `_err "$0: file '$script' already exists"`
-    else 
+    else
         echo "#!/bin/bash" > $script
         chmod +x $script
         eval $editor $script
@@ -88,4 +88,3 @@ repl() {
 	[[ -n $1 ]] || { return `_err "$0: 'missing arguments'"`; }
 	echo $IN | sed -r "s/$1/$2/g"
 }
-
