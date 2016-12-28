@@ -18,9 +18,10 @@ _err() {
     return 1
 }
 
-bk() {
+bkup() {
     local file="$1"
-    cp -S '.bk' -fb $file $file
+    [ -f "$file" ] || return 1
+    cp -f -S '.bk~' --backup='numbered' $file $file
 }
 
 newsh() {
