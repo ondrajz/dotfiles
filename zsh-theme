@@ -121,9 +121,11 @@ prompt_where() {
     local git_info=$(git_prompt_info)
     if [ -n "$git_info" ]; then
         local toplevel="$(git rev-parse --show-toplevel)"
-        local repo="%{%B%K{black}%F{magenta}%}$(basename $toplevel)"
-        local prefix="$(git rev-parse --show-prefix)"
-        [ -n "$prefix" ] && repo+="%{%b%K{black}%F{magenta}%}/$prefix"
+        if [ -n "$toplevel" ]; then
+            local repo="%{%B%K{black}%F{magenta}%}$(basename $toplevel)"
+            local prefix="$(git rev-parse --show-prefix)"
+            [ -n "$prefix" ] && repo+="%{%b%K{black}%F{magenta}%}/$prefix"
+        fi
         #location="%{%b%K{black}%F{magenta}%}${repo}"
         #location="%{%b%K{black}%F{yellow}%}$prefix"
         #if [[ "$toplevel" != "$(pwd)" ]]; then
@@ -133,6 +135,12 @@ prompt_where() {
     fi
     local hash=$(git show -s --format=%h 2>/dev/null)
     [ -n "$hash" ] && location+="%{%B%K{black}%F{blue}%}${hash}"
+
+    local git_status=$(git_prompt_status)
+    if [ -n "$git_status" ]; then
+        location+="%{%b%K{black}%f%}${git_status}"
+    fi
+
     echo "${location}%E%{%b%k%f%}"
 }
 
@@ -156,17 +164,17 @@ ZSH_THEME_GIT_PROMPT_RENAMED="%{%b%K{black}%F{blue}%}◭ "
 ZSH_THEME_GIT_PROMPT_UNMERGED="%{%b%K{black}%F{cyan}%}⛖ "
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%b%K{black}%F{white}%}❓ "
 
-prompt_info() {
-    local info=""
-    local git_status=$(git_prompt_status)
-    if [ -n "$git_status" ]; then
-        #local repo=$(basename `git rev-parse --show-toplevel`)
-        info+="%{%b%K{black}%f%}${git_status}"
-    fi
-    #local hash=$(git show -s --format=%h 2>/dev/null)
-    #[ -n "$hash" ] && info+="%{%b%K{black}%f%}sha:%{%B%K{black}%F{black}%}${hash}"
-    echo "${info}%{%b%k%f%}"
-}
+#prompt_info() {
+#    local info=""
+#    local git_status=$(git_prompt_status)
+#    if [ -n "$git_status" ]; then
+#        #local repo=$(basename `git rev-parse --show-toplevel`)
+#        info+="%{%b%K{black}%f%}${git_status}"
+#    fi
+#    #local hash=$(git show -s --format=%h 2>/dev/null)
+#    #[ -n "$hash" ] && info+="%{%b%K{black}%f%}sha:%{%B%K{black}%F{black}%}${hash}"
+#    echo "${info}%{%b%k%f%}"
+#}
 
 prompt_setup() {
     autoload -Uz colors && colors
@@ -182,7 +190,8 @@ prompt_setup() {
 %{%b%K{black}%f%} $(prompt_who) $(prompt_where)
 %{%b%k%f%}$(prompt_char ➤) %{%b%k%F{white}%}'
     PROMPT2='➣ '
-    RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 10)$(prompt_clock)%}'
+    #RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 10)$(prompt_clock)%}'
+    RPROMPT='$(prompt_clock)'
 }
 
 prompt_setup
