@@ -86,7 +86,7 @@ prompt_result_line() {
         local e="$(( $LAST_EXEC_TIME % 60 ))s"
         (( $LAST_EXEC_TIME >= 60 )) && e="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$e"
         (( $LAST_EXEC_TIME >= 3600 )) && e="$(( $LAST_EXEC_TIME / 3600 ))h$e"
-        right+="%{%b%F{blue}%}⏲ $e "
+        right+="%{%b%F{blue}%}⏱ $e "
     fi
     if [ "$LAST_RESULT" -eq 0 ]; then
         right+="%{%b%F{green}%}⏎ $LAST_RESULT"
@@ -145,7 +145,7 @@ prompt_char() {
 }
 
 prompt_clock() {
-    local clock="%{%b%k%f%}⏰ %D{%H:%M:%S}%{%b%k%f%}"
+    local clock="%{%b%k%f%}⏲ %D{%H:%M:%S}%{%b%k%f%}"
     echo -n "${clock}%{%b%k%f%s%}"
 }
 
