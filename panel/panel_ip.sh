@@ -31,9 +31,10 @@ fi
 
 EXT=`cat $EXT_FILE`
 EXTH=`grep $EXT /etc/hosts | awk '{print $2}'`
-[ -n "$EXTH" ] && EXT="$EXTH"
+[ -n "$EXTH" ] && EXT="$EXT ($EXTH)"
 ETH=`cat $ETH_FILE`
+[ -n "$NET_IF" ] && ETH="$ETH ($NET_IF)"
 
-echo "<txt>$NET_IF: <span fgcolor='${ETH_CLR}'>${ETH}</span>
+echo "<txt>def: <span fgcolor='${ETH_CLR}'>${ETH}</span>
 pub: <span fgcolor='${EXT_CLR}'>${EXT}</span></txt>"
 
