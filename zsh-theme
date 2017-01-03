@@ -108,6 +108,7 @@ prompt_result_line() {
 prompt_who() {
     local user="%(#.%{%b%K{black}%F{red}%}.%{%b%K{black}%F{green}%})%n"
     local host="%{%b%K{black}%F{cyan}%}%m"
+    [ -n "$SSH_CLIENT" ] && host="%{%b%K{black}%F{blue}%}%m"
     echo "${user}%{%b%K{black}%f%}@${host}%{%b%K{black}%f%}"
 }
 
