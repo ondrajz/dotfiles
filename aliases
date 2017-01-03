@@ -35,8 +35,8 @@ alias wgeto='wget -q -O -'
 alias myhome='sudo chown -R $USER:$USER ~'
 
 # other
-alias snmpget='snmpg -v 2c -c public'
-alias snmpset='snmps -v 2c -c public'
+alias snmpget='snmpget -v 2c -c public'
+alias snmpset='snmpset -v 2c -c public'
 
 alias curljson='curl -H "Accept: application/json" -H "Content-Type: application/json"'
 alias curljp='curljson -X POST'
