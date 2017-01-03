@@ -134,7 +134,7 @@ prompt_where() {
         location+="%{%b%K{black}%F{white}%}${git_info} "
     fi
     local hash=$(git show -s --format=%h 2>/dev/null)
-    [ -n "$hash" ] && location+="%{%B%K{black}%F{blue}%}${hash}"
+    [ -n "$hash" ] && location+="%{%b%K{black}%f%}${hash} " # %{%B%K{black}%F{blue}%}
 
     local git_status=$(git_prompt_status)
     if [ -n "$git_status" ]; then
