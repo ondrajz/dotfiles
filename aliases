@@ -37,6 +37,7 @@ alias myhome='sudo chown -R $USER:$USER ~'
 # other
 alias snmpget='snmpget -v 2c -c public'
 alias snmpset='snmpset -v 2c -c public'
+alias snmpwalk='snmpwalk -v 2c -c public'
 
 alias curljson='curl -H "Accept: application/json" -H "Content-Type: application/json"'
 alias curljp='curljson -X POST'
