@@ -44,6 +44,7 @@ alias curljp='curljson -X POST'
 alias curljg='curljson -X GET'
 
 alias dotsvg='dot -Tsvg -o > /tmp/tempdot.svg && exo-open /tmp/tempdot.svg'
+alias dotpng='dot -Tpng -o > /tmp/tempdot.png && exo-open /tmp/tempdot.png'
 
 alias install='sudo apt install -y'
 alias purge='sudo apt purge -y'
