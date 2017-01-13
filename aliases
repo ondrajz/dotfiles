@@ -33,6 +33,8 @@ alias rgrep='grep -R -n -H -C 5 '
 alias cutcol='cut -c1-$COLUMNS'
 alias wgeto='wget -q -O -'
 alias myhome='sudo chown -R $USER:$USER ~'
+alias clipin='xclip -in -selection clipboard'
+alias clipout='xclip -out -selection clipboard'
 
 # other
 alias snmpget='snmpget -v 2c -c public'
