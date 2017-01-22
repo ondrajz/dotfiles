@@ -1,6 +1,6 @@
 # zsh startup file
 
-CASE_SENSITIVE="true"
+#CASE_SENSITIVE="true"
 # ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 HIST_STAMPS="mm/dd/yyyy"
