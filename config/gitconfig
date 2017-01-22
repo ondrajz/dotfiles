@@ -1,0 +1,23 @@
+[user]
+	email = truefurby@gmail.com
+	name = TrueFurby
+[core]
+	filemode = false
+	quotepath = false
+[push]
+	default = simple
+[cola]
+	textwidth = 32
+	tabwidth = 4
+	boldheaders = true
+	blameviewer = git gui blame
+	fontdiff = DejaVu Sans Mono,8,-1,5,50,0,0,0,0,0
+[diff]
+	tool = meld
+[merge]
+	tool = xxdiff
+[gui]
+	editor = gvim
+	historybrowser = gitk
+	fontui = -family \"DejaVu Sans\" -size 9 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"DejaVu Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0

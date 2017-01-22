@@ -1,0 +1,11 @@
+nd F11 and F12 (NOT F1 and F2) to previous and next screen window
+bindkey -k F9 prev
+bindkey -k F10 next
+startup_message off
+msgwait 0
+hardstatus alwayslastline
+hardstatus string "%{= wk} %S%? %u%? %{= K.} %{=r kg} $USER%{.d}@%{.c}%H %{= K.} %{= bW} %n* %{+b}%t %{= Bk}%? %W %?%{= K.} %= %{kd} load: %l %{= K.} %= %{+b mW} %D, %0c %{= Mk} %d %M %Y %{=}"
+nonblock on
+altscreen on
+attrcolor b ".I"
+
