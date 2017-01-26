@@ -51,6 +51,7 @@ alias dotpng='dot -Tpng -o > /tmp/tempdot.png && exo-open /tmp/tempdot.png'
 alias install='sudo apt install -y'
 alias purge='sudo apt purge -y'
 alias update='sudo apt update'
+alias upgrade='sudo apt upgrade && sudo apt autoremove'
 
 alias goget='go get -v'
 alias gobuild='go build -v'
