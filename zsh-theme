@@ -114,11 +114,12 @@ prompt_who() {
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%K{black}%F{blue}%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{%b%K{black}%f%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{%B%K{black}%F{red}%} ✘"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{%B%K{black}%F{green}%} ✔"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{%b%K{black}%F{red}%} ✘"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{%b%K{black}%F{green}%} "
 
 prompt_where() {
     local location="%{%b%K{black}%F{yellow}%}%3~ "
+
     local git_info=$(git_prompt_info)
     if [ -n "$git_info" ]; then
         local toplevel="$(git rev-parse --show-toplevel)"
