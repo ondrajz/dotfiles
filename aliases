@@ -55,6 +55,7 @@ alias upgrade='sudo apt upgrade && sudo apt autoremove'
 
 alias goget='go get -v'
 alias gobuild='go build -v'
+alias gosloccount='find . -path ./vendor -prune -o -name "*.go" -print0 | xargs -0 wc -l'
 
 alias termbin='nc termbin.com 9999'
 
