@@ -114,8 +114,17 @@ prompt_who() {
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%K{black}%F{blue}%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{%b%K{black}%f%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{%b%K{black}%F{red}%} ✘"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{%b%K{black}%F{green}%} "
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{%B%K{black}%F{red}%}⛏ "
+ZSH_THEME_GIT_PROMPT_CLEAN="%{%B%K{black}%F{green}%} "
+
+ZSH_THEME_GIT_PROMPT_ADDED="%{%b%K{black}%F{green}%}✚ "
+ZSH_THEME_GIT_PROMPT_MODIFIED="%{%B%K{black}%F{yellow}%}✎ "
+ZSH_THEME_GIT_PROMPT_DELETED="%{%b%K{black}%F{red}%}⊘ "
+ZSH_THEME_GIT_PROMPT_RENAMED="%{%b%K{black}%F{yellow}%}▴ "
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{%b%K{black}%F{magenta}%}⛖ "
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%b%K{black}%F{cyan}%}✭ "
+ZSH_THEME_GIT_PROMPT_STAGED="%{%b%K{black}%F{blue}%}𝝙 "
+ZSH_THEME_GIT_PROMPT_AHEAD="%{%B%K{black}%F{blue}%}⚑ "
 
 prompt_where() {
     local location="%{%b%K{black}%F{yellow}%}%3~ "
@@ -158,13 +167,6 @@ prompt_clock() {
     local clock="%{%b%k%f%}⏲ %D{%H:%M:%S}%{%b%k%f%}"
     echo -n "${clock}%{%b%k%f%s%}"
 }
-
-ZSH_THEME_GIT_PROMPT_ADDED="%{%B%K{black}%F{green}%}✚ "
-ZSH_THEME_GIT_PROMPT_MODIFIED="%{%B%K{black}%F{yellow}%}✎ "
-ZSH_THEME_GIT_PROMPT_DELETED="%{%B%K{black}%F{red}%}❌ "
-ZSH_THEME_GIT_PROMPT_RENAMED="%{%B%K{black}%F{blue}%}◭ "
-ZSH_THEME_GIT_PROMPT_UNMERGED="%{%B%K{black}%F{cyan}%}⛖ "
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%B%K{black}%F{white}%}❓ "
 
 #prompt_info() {
 #    local info=""
