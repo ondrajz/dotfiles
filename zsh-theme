@@ -113,7 +113,7 @@ prompt_who() {
 }
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%K{black}%F{blue}%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{%b%K{black}%f%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="" #"%{%b%K{black}%f%}"
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{%B%K{black}%F{red}%}⛏ "
 ZSH_THEME_GIT_PROMPT_CLEAN="%{%B%K{black}%F{green}%} "
 
@@ -144,8 +144,9 @@ prompt_where() {
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
     fi
-    local hash=$(git describe --always 2>/dev/null)
-    [ -n "$hash" ] && location+="%{%b%K{black}%f%}${hash} "
+
+    local vers=$(git describe --always 2>/dev/null)
+    [ -n "$vers" ] && location+="${vers} "
 
     local git_status=$(git_prompt_status)
     if [ -n "$git_status" ]; then
