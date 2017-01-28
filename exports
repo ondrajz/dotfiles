@@ -4,7 +4,7 @@ export DOTFILES="$HOME/.dotfiles"
 
 export LANG="en_US.UTF-8"
 export EDITOR="nano"
-export MANPATH="/usr/local/man:$MANPATH"
+{ echo "$MANPATH" | grep -q '/usr/local/man' } || export MANPATH="/usr/local/man:$MANPATH"
 [ -x /usr/bin/most ] && PAGER="most"
 
 PATH="$PATH:$DOTFILES/bin"
