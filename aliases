@@ -11,7 +11,7 @@ alias t='tail -f'
 
 # defaults
 alias cp='cp -vi'
-alias grep='grep --color=always -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash,.cache} --exclude="*~" -D skip'
+alias grep='grep --color=always -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash,.cache,.directory_history} --exclude="*~" -D skip'
 alias mv='mv -vi'
 alias rm='rm -vi'
 alias ls='ls -hB --color'
