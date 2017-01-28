@@ -50,8 +50,8 @@ newsh() {
 
 nano() {
     if [ -f "$1" ] && [ ! -w "$1" ] && [ "$(whoami)" != 'root' ]; then
-        echo "file is not writable, using sudo.."
-        sudo nano "$@"
+        echo "file is not writable, using sudoedit"
+        sudoedit "$@"
     else
         if [ ! -e "$1" ] && [[ "$1" == *".sh" ]]; then
             echo "#!/bin/bash" > $1
