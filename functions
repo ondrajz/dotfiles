@@ -24,6 +24,14 @@ bkup() {
     cp -f -S '.bk~' --backup='numbered' $file $file
 }
 
+lndotfile() {
+    local src="$DOTFILES/$1"
+    [ -e "$src" ] || return `_err "$0: '$src' not found in dotfiles"`
+    local dst="$2"
+    [ -z "$2" ] && dst="~/$1"
+    ln -s "$src" "$dst"
+}
+
 newsh() {
     local editor=${EDITOR:-`which nano`}
     local script="$1"
@@ -89,3 +97,4 @@ repl() {
 	[[ -n $1 ]] || { return `_err "$0: 'missing arguments'"`; }
 	echo $IN | sed -r "s/$1/$2/g"
 }
+
