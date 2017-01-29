@@ -1,5 +1,6 @@
 # zsh startup file
 
+SAVEHIST=100000
 #CASE_SENSITIVE="true"
 # ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
