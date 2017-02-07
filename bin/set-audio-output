@@ -1,0 +1,14 @@
+#!/bin/bash
+
+case "$1" in
+    d|digital)
+        pacmd set-card-profile 0 output:iec958-stereo+input:analog-stereo
+        ;;
+    a|analog)
+        pacmd set-card-profile 0 output:analog-stereo+input:analog-stereo
+        ;;
+    *)
+        echo "usage: digital/analog (d/a)"
+        ;;
+esac
+
