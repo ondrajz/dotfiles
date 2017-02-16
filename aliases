@@ -36,6 +36,7 @@ alias wgeto='wget -q -O -'
 alias myhome='sudo chown -R $USER:$USER ~'
 alias clipin='xclip -in -selection clipboard'
 alias clipout='xclip -out -selection clipboard'
+alias rec='asciinema rec --max-wait 1'
 
 # other
 alias snmpget='snmpget -v 2c -c public'
