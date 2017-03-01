@@ -159,9 +159,10 @@ prompt_where() {
 prompt_char() {
     local c
     for i in `seq 1 "$SHLVL"`; do
-        c+="$1"
+        c+="➤"
     done
-    echo "%{%b%F{white}%}${c}%{%b%f%}"
+    [ -n "${ASCIINEMA_REC}" ] && 
+      echo "%{%b%F{red}%}${c}%{%b%f%}" || echo "%{%b%F{white}%}${c}%{%b%f%}"
 }
 
 prompt_clock() {
@@ -193,7 +194,7 @@ prompt_setup() {
 
     PROMPT='${(e)RESULT_LINE}\
 %{%b%K{black}%f%} $(prompt_who) $(prompt_where)
-%{%b%k%f%}$(prompt_char ➤) %{%b%k%F{white}%}'
+%{%b%k%f%}$(prompt_char) %{%b%k%F{white}%}'
     PROMPT2='➣ '
     #RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 10)$(prompt_clock)%}'
     RPROMPT='$(prompt_clock)'
