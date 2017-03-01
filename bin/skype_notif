@@ -1,0 +1,23 @@
+#!/bin/bash
+TYPE="$1"
+NAME="$2"
+FNAME="$3"
+FPATH="$4"
+MESSAGE="$5"
+SIZE="$6"
+SKYPE="$7"
+
+SKYPE_ICON="/usr/share/icons/hicolor/48x48/apps/skype.png"
+SKYPE_NOTIF_LIST="${SKYPE_NOTIF_LIST:-$HOME/.skype_notif_list}"
+
+args=`echo "$@"`
+
+[ "$SKYPE" == "echo123" ] && notify-send -i $SKYPE_ICON "Test event" "${#} args:\n${args}"
+
+[ -f "$SKYPE_NOTIF_LIST" ] || echo "missing notif list" && exit 1
+
+if [ "${TYPE}" == "ContactOffline" ]; then
+    if grep -q "$SKYPE" "$SKYPE_NOTIF_LIST"; then
+        notify-send -i $SKYPE_ICON "$TYPE" "$NAME ($SKYPE)"
+    fi
+fi
