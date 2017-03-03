@@ -15,6 +15,7 @@ alias grep='grep --color=always -sI --exclude-dir={.bzr,CVS,.git,.hg,.svn,Trash,
 alias mv='mv -vi'
 alias rm='rm -vi'
 alias ls='ls -hB --color'
+alias ping='ping -D -v'
 
 # shortcuts
 alias la='/bin/ls --color -laF'
