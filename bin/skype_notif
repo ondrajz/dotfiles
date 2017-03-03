@@ -16,7 +16,7 @@ args=`echo "$@"`
 
 [ -f "$SKYPE_NOTIF_LIST" ] || echo "missing notif list" && exit 1
 
-if [ "${TYPE}" == "ContactOffline" ]; then
+if [ "${TYPE}" == "ContactOffline" ] || [ "${TYPE}" == "ContactOnline" ]; then
     if grep -q "$SKYPE" "$SKYPE_NOTIF_LIST"; then
         notify-send -i $SKYPE_ICON "$TYPE" "$NAME ($SKYPE)"
     fi
