@@ -118,3 +118,7 @@ function a() {
 		atom "$@";
 	fi;
 }
+
+ping() {
+    /bin/ping "$@" | xargs -L 1 -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
+}
