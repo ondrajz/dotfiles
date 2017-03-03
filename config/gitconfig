@@ -4,6 +4,7 @@
 [core]
 	filemode = false
 	quotepath = false
+    excludesfile = ~/.gitignore
 [push]
 	default = simple
 [cola]
@@ -21,3 +22,5 @@
 	historybrowser = gitk
 	fontui = -family \"DejaVu Sans\" -size 9 -weight normal -slant roman -underline 0 -overstrike 0
 	fontdiff = -family \"DejaVu Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
+    tabsize = 4
+
