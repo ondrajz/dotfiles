@@ -143,10 +143,10 @@ prompt_where() {
             location="%{%b%K{black}%F{magenta}%}$repo %{%b%K{black}%F{white}%} "
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
-    fi
 
-    local vers=$(git describe --always --dirty=-dev | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/' 2>/dev/null)
-    [ -n "$vers" ] && location+="${vers} "
+        local vers=$(git describe --always --dirty=-dev | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
+        [ -n "$vers" ] && location+="${vers} "
+    fi
 
     local git_status=$(git_prompt_status)
     if [ -n "$git_status" ]; then
