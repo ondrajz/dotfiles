@@ -144,7 +144,7 @@ prompt_where() {
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
-        local vers=$(git describe --always --dirty=-dev | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
+        local vers=$(git describe --always --dirty=-dev 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
         [ -n "$vers" ] && location+="${vers} "
     fi
 
