@@ -8,6 +8,7 @@ alias h='history'
 alias i='which'
 alias l='ls --color -1hGBF --group-directories-first'
 alias t='tail -f'
+alias p='ping 8.8.8.8'
 
 # defaults
 alias cp='cp -vi'
