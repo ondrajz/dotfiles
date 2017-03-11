@@ -1,5 +1,8 @@
 set tabsize 4
 #set tabstospaces
-set tempfile
+#set tempfile
+set positionlog
+set backup
 
 include "~/.config/nano/*.nanorc"
+
