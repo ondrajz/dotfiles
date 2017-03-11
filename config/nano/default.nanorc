@@ -1,0 +1,13 @@
+syntax "default"
+
+## Possible errors and parameters
+## Strings
+icolor magenta "'(\\.|[^'])*'"
+icolor brightmagenta ""(\\.|[^"])*""
+
+## Comments
+icolor brightblue "^[[:space:]]*#.*$"
+icolor cyan "^[[:space:]]*##.*$"
+
+## Trailing spaces
+color ,green "[[:space:]]+$"
