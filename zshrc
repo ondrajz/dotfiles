@@ -1,9 +1,9 @@
 # zsh startup file
 
-SAVEHIST=100000
 #CASE_SENSITIVE="true"
-# ENABLE_CORRECTION="true"
+#ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
+SAVEHIST=100000
 HIST_STAMPS="mm/dd/yyyy"
 DISABLE_AUTO_TITLE="true"
 DISABLE_UPDATE_PROMPT="true"
@@ -16,11 +16,11 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
     elapsed="$(( $3 % 60 )) sec"
     (( $3 >= 60 )) && elapsed="$((( $3 % 3600) / 60 )) min $elapsed"
     (( $3 >= 3600 )) && elapsed="$(( $3 / 3600 )) hours $elapsed"
+    cmd="$2"
     if [ $1 -eq 0 ]; then
-        notify-send -i terminal "'${2}'" "<i>$elapsed</i>"
+        notify-send -i terminal "Command completed" "'$cmd'\n<i>took $elapsed</i>"
     else
-        notify-send -i error "'${2}'" "<b>↵ ${1}</b>
-<i>$elapsed</i>"
+        notify-send -i error "Command failed: ↵$1" "'$cmd'\n<i>took $elapsed</i>"
     fi
 }
 
