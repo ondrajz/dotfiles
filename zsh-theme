@@ -113,9 +113,9 @@ prompt_who() {
 }
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%K{black}%F{blue}%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="" #"%{%b%K{black}%f%}"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{%B%K{black}%F{red}%}⛏ "
-ZSH_THEME_GIT_PROMPT_CLEAN="%{%B%K{black}%F{green}%} "
+ZSH_THEME_GIT_PROMPT_SUFFIX=""
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{%B%K{black}%F{red}%}✲"
+ZSH_THEME_GIT_PROMPT_CLEAN=" %{%B%K{black}%F{green}%}"
 
 ZSH_THEME_GIT_PROMPT_ADDED="%{%b%K{black}%F{green}%}✚ "
 ZSH_THEME_GIT_PROMPT_MODIFIED="%{%B%K{black}%F{yellow}%}✎ "
@@ -144,8 +144,11 @@ prompt_where() {
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
-        local vers=$(git describe --always --dirty=-dev 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
+        local vers=$(git describe --always --dirty 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
         [ -n "$vers" ] && location+="${vers} "
+        let ago=$((`date +"%s"` - `git show -s --format="%ct"`))
+        local ago=`printf '%dh%02dm%02ds\n' $(($ago/3600)) $(($ago%3600/60)) $(($ago%60))`
+        [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}${ago} "
     fi
 
     local git_status=$(git_prompt_status)
