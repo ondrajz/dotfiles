@@ -18,9 +18,9 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
     (( $3 >= 3600 )) && elapsed="$(( $3 / 3600 )) hours $elapsed"
     cmd="$2"
     if [ $1 -eq 0 ]; then
-        notify-send -i terminal "Command completed" "'$cmd'\n\n<i>took $elapsed</i>"
+        notify-send -i terminal "Command has completed " "'$cmd'\n\n<i>took $elapsed</i>"
     else
-        notify-send -i error "Command failed: ↵$1" "'$cmd'\n\n<i>took $elapsed</i>"
+        notify-send -i terminal "Command has failed ✘" "'$cmd'\n\nexited with ↵$1\n<i>took $elapsed</i>"
     fi
 }
 
