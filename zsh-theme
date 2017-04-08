@@ -140,7 +140,7 @@ prompt_where() {
         #location="%{%b%K{black}%F{magenta}%}${repo}"
         #location="%{%b%K{black}%F{yellow}%}$prefix"
         #if [[ "$toplevel" != "$(pwd)" ]]; then
-            location="%{%b%K{black}%F{magenta}%}$repo %{%b%K{black}%F{white}%} "
+            location="%{%b%K{black}%F{magenta}%}$repo%{%b%K{black}%F{white}%} "
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
@@ -148,7 +148,7 @@ prompt_where() {
         [ -n "$vers" ] && location+="${vers} "
         let ago=$((`date +"%s"` - `git show -s --format="%ct"`))
         local ago=`printf '%dh%02dm%02ds\n' $(($ago/3600)) $(($ago%3600/60)) $(($ago%60))`
-        [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}${ago} "
+        [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}⭯ ${ago} "
     fi
 
     local git_status=$(git_prompt_status)
