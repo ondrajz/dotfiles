@@ -13,6 +13,7 @@
 	boldheaders = true
 	blameviewer = git gui blame
 	fontdiff = DejaVu Sans Mono,8,-1,5,50,0,0,0,0,0
+	defaultrepo = /home/furby/.dotfiles
 [diff]
 	tool = meld
 [merge]
