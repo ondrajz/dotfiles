@@ -1,10 +1,14 @@
 # zsh startup file
 
+unsetopt histignorealldups share_history
+
 #CASE_SENSITIVE="true"
 #ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
+HISTSIZE=100000
 SAVEHIST=100000
-HIST_STAMPS="mm/dd/yyyy"
+HISTFILE=~/.zsh_history
+#HIST_STAMPS="mm/dd/yyyy"
 DISABLE_AUTO_TITLE="true"
 DISABLE_UPDATE_PROMPT="true"
 
@@ -26,8 +30,6 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
 
 plugins=(go git pass screen sudo bgnotify per-directory-history zsh_reload pip compleat debian django)
 source $ZSH/oh-my-zsh.sh
-
-unsetopt share_history
 
 # omit backup files
 zstyle ':completion:*:*:*:*' file-patterns '^*(~):source-files' '*:all-files'
