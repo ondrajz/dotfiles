@@ -1,0 +1,8 @@
+#!/bin/bash
+
+progs=$(for d in ${PATH//:/ } ; do \
+    for f in $d/* ; do \
+        test -x $f && test -f $f && echo $f; \
+done; done | sort -u)
+ls --color $progs
+ 
