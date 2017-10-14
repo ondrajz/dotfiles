@@ -170,7 +170,7 @@ prompt_where() {
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
-        local vers=$(git describe --always --dirty 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
+        local vers=$(git describe --always --dirty --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1-\2/')
         [ -n "$vers" ] && location+="${vers} "
         let agosec=$((`date +"%s"` - `git show -s --format="%ct"`))
         local ago=`timeago $agosec`;
