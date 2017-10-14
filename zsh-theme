@@ -147,7 +147,7 @@ prompt_where() {
         local vers=$(git describe --always --dirty --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1-\2/')
         [ -n "$vers" ] && location+="${vers} "
         let ago=$((`date +"%s"` - `git show -s --format="%ct"`))
-        local ago=`printf '%dh%02dm%02ds\n' $(($ago/3600)) $(($ago%3600/60)) $(($ago%60))`
+        local ago=`printf '%dh%02dm\n' $(($ago/3600)) $(($ago%3600/60))` # $(($ago%60))`
         [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}⭯ ${ago} "
     fi
 
