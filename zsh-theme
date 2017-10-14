@@ -156,6 +156,14 @@ prompt_where() {
         location+="%{%b%K{black}%f%}${git_status}"
     fi
 
+    if [ -x /usr/local/go/bin/go ]; then
+        gocount=`ls -1 *.go 2>/dev/null | wc -l`
+        if [ $gocount != 0 ]; then
+            gover=$(go version | sed -e 's/^go version \(go[0-9\.]*\).*$/\1/')
+            location+="[%{%b%K{black}%F{magenta}%}⯎ ${gover}%{%B%K{black}%F{black}%} ] "
+        fi
+    fi
+
     echo "${location}%E%{%b%k%f%}"
 }
 
@@ -164,7 +172,7 @@ prompt_char() {
     for i in `seq 1 "$SHLVL"`; do
         c+="➤"
     done
-    [ -n "${ASCIINEMA_REC}" ] && 
+    [ -n "${ASCIINEMA_REC}" ] &&
       echo "%{%b%F{red}%}${c}%{%b%f%}" || echo "%{%b%F{white}%}${c}%{%b%f%}"
 }
 
