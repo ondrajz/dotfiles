@@ -1,18 +1,33 @@
 #!/usr/bin/env bash
 
+RCol='\e[0;0m'
+Red='\e[0;31m';
+Gre='\e[0;32m';
+Yel='\e[0;33m';
+Blu='\e[0;34m';
+Mag='\e[0;35m';
+Cya='\e[0;36m';
+Bold='\e[1;39m';
+
 # handy functions
 
 confirm() {
-    if [ -n "$ZSH_VERSION" ]; then
-        read -k 1 "?$1 y/N "
-    else
-        read -ps "$1 y/N " -n 1
-    fi
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        return 0
-    fi
-    return 1
+    local msg="$1"
+    echo -ne " -> ${Bold}$msg [Y/n]${RCol} "
+    while true; do
+        if [ -n "$ZSH_VERSION" ]; then
+            read -k1 -s #"? [y/n] "
+        else
+            read -n1 -s #-p " [y/n] "
+        fi
+        if [[ $REPLY =~ ^[Yy]$ ]] || [[ $REPLY = $'\n' ]]; then
+            echo
+            return 0
+        elif [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo
+            return 1
+        fi
+    done
 }
 
 _err() {
@@ -121,4 +136,23 @@ function a() {
 
 ping() {
     /bin/ping "$@" | xargs -L 1 -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
+}
+
+repeatcmd() {
+    cmd="$1";
+	[[ -n $cmd ]] || { return `_err "$0: 'missing command argument'"`; }
+    echo -e "${Cya}Repeating command '$cmd'${RCol}\n";
+    while true; do
+        if $cmd; then
+            echo -ne "\n ${Yel}Command '$cmd$' exited${RCol}"
+        else
+            echo -ne "\n ${Red}Command '$cmd' exited with '$?'${RCol}"
+        fi
+        if confirm "Restart?"; then
+            echo
+            #echo -e "\n\n${Bold}Restarting command '$cmd'${RCol}\n"
+        else
+            break;
+        fi
+    done;
 }
