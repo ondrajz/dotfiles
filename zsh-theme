@@ -126,6 +126,32 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%{%b%K{black}%F{cyan}%}✭ "
 ZSH_THEME_GIT_PROMPT_STAGED="%{%b%K{black}%F{blue}%}𝝙 "
 ZSH_THEME_GIT_PROMPT_AHEAD="%{%B%K{black}%F{blue}%}⚑ "
 
+function timeago() {
+    num=$1
+    min=0
+    hour=0
+    day=0
+    if ((num>59)); then
+        ((sec=num%60))
+        ((num=num/60))
+        if ((num>59)); then
+            ((min=num%60))
+            ((num=num/60))
+            if ((num>23)); then
+                ((hour=num%24))
+                ((day=num/24))
+            else
+                ((hour=num))
+            fi
+        else
+            ((min=num))
+        fi
+    else
+        ((sec=num))
+    fi
+    echo "$day"d"$hour"h"$min"m #"$sec"s
+}
+
 prompt_where() {
     local location="%{%b%K{black}%F{yellow}%}%3~ "
 
@@ -146,8 +172,8 @@ prompt_where() {
 
         local vers=$(git describe --always --dirty 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/.git+\1-\2/')
         [ -n "$vers" ] && location+="${vers} "
-        let ago=$((`date +"%s"` - `git show -s --format="%ct"`))
-        local ago=`printf '%dh%02dm%02ds\n' $(($ago/3600)) $(($ago%3600/60)) $(($ago%60))`
+        let agosec=$((`date +"%s"` - `git show -s --format="%ct"`))
+        local ago=`timeago $agosec`;
         [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}⭯ ${ago} "
     fi
 
@@ -164,7 +190,7 @@ prompt_char() {
     for i in `seq 1 "$SHLVL"`; do
         c+="➤"
     done
-    [ -n "${ASCIINEMA_REC}" ] && 
+    [ -n "${ASCIINEMA_REC}" ] &&
       echo "%{%b%F{red}%}${c}%{%b%f%}" || echo "%{%b%F{white}%}${c}%{%b%f%}"
 }
 
