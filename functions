@@ -115,8 +115,9 @@ repl() {
 	echo $IN | sed -r "s/$1/$2/g"
 }
 
-highlight() {
-    echo "$(cat -)" | /bin/grep --color -E "$1|$"
+# highlight
+hl() {
+    echo "$(cat -)" | /bin/grep --color=always -i -E "$1|$"
 }
 
 # Create a new directory and enter it
