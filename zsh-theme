@@ -170,7 +170,8 @@ prompt_where() {
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
         local vers=`git describe --always --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1/'`
-        local hash=`git describe --always 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\2/'`
+        #local hash=`git describe --always 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\2/'`
+        local hash=`git rev-parse HEAD | cut -c1-7`
         [ -n "$vers" ] && location+="${vers} "
         [ -n "$hash" ] && [ "$vers" != "$hash" ] && location+="%{%B%K{black}%F{black}%}<%{%b%f%}${hash}%{%B%K{black}%F{black}%}> "
         let ago=$((`date +"%s"` - `git show -s --format="%ct"`))
@@ -183,13 +184,15 @@ prompt_where() {
         location+="%{%b%K{black}%f%}${git_status}"
     fi
 
-    #if [ -x /usr/local/go/bin/go ]; then
-    #    gocount=`ls '*.go' 2>/dev/null`
-    #    if [ $gocount != 0 ]; then
-    #        gover=$(go version | sed -e 's/^go version \(go[0-9\.]*\).*$/\1/')
-    #        location+="[%{%b%K{black}%F{magenta}%}⯎ ${gover}%{%B%K{black}%F{black}%} ] "
-    #    fi
-    #fi
+	local goexe=$(command which go)
+    if [ -n "$goexe" ]; then
+        gocount=$(command find . -maxdepth 1 -name "*.go" 2>/dev/null | wc -l)
+        #echo "gocount: $gocount"
+        if [[ "$gocount" -gt 0 ]]; then
+            gover=$(go version | sed -e 's/^go version \(go[0-9\.]*\).*$/\1/')
+            location+=" %{%B%K{black}%F{yellow}%}${gover}%{%B%K{black}%F{black}%}"
+        fi
+    fi
 
     echo "${location}%E%{%b%k%f%}"
 }
