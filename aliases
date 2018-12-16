@@ -29,6 +29,7 @@ alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias wh='which -a'
 alias tt='tree -d -C -L 5'
+alias ipa='ip -c -br addr show scope global'
 
 # handy
 alias fuck='sudo $(history -p \!\!)'
