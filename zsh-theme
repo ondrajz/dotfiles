@@ -169,7 +169,17 @@ function timeago() {
     else
         ((sec=num))
     fi
-    echo "$day"d"$hour"h"$min"m #"$sec"s
+    
+    ago=""
+    if ((day>3)); then
+        ago="${day}d"
+    elif ((day>0)); then
+        ago="${day}d${min}m"
+    else
+        ago="${min}m"
+    fi
+    #echo "$day"d"$hour"h"$min"m #"$sec"s
+    echo $ago
 }
 
 prompt_where() {
@@ -185,8 +195,8 @@ prompt_where() {
             [ -n "$prefix" ] && repo+="%{%b%K{black}%F{magenta}%}/$prefix"
             local dir=$(print -P "%~")
             dir=$(dirname `realpath "$PWD/$cdup"`)
-            location="%{%b%K{black}%F{yellow}%}$(print -rD $dir)%{%b%K{black}%F{white}%} "
-            location+="%{%b%K{black}%F{magenta}%}$repo "
+            location="%{%b%K{black}%F{yellow}%}$(print -rD $dir)%{%B%K{black}%F{black}%}/"
+            location+="%{%b%K{black}%F{magenta}%}$repo%{%b%K{black}%F{white}%} "
         fi
 
         #location="%{%b%K{black}%F{magenta}%}${repo}"
@@ -195,15 +205,12 @@ prompt_where() {
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
-        local vers=$(git describe --always --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1-\2/')
-        #local vers=`git describe --always --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1/'`
-        #local hash=`git describe --always 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\2/'`
+        local vers=$(git describe --always --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1/')
         local hash=`git rev-parse HEAD | cut -c1-7`
         [ -n "$vers" ] && location+="${vers} "
         [ -n "$hash" ] && [ "$vers" != "$hash" ] && location+="%{%B%K{black}%F{black}%}<%{%b%f%}${hash}%{%B%K{black}%F{black}%}> "
         let agosec=$((`date +"%s"` - `git show -s --format="%ct"`))
         local ago=`timeago $agosec`;
-        #local ago=`printf '%dh%02dm\n' $(($ago/3600)) $(($ago%3600/60))` # $(($ago%60))`
         [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}⭯ ${ago} "
     fi
 
@@ -218,7 +225,7 @@ prompt_where() {
         #echo "gocount: $gocount"
         if [[ "$gocount" -gt 0 ]]; then
             gover=$(go version | sed -e 's/^go version \(go[0-9\.]*\).*$/\1/')
-            location+=" %{%B%K{black}%F{yellow}%}${gover}%{%B%K{black}%F{black}%}"
+            location+="%{%b%K{black}%f%} ଘʕ◔ϖ◔ʔଓ %{%B%K{black}%F{black}%} ${gover}%{%B%K{black}%F{black}%}"
         fi
     fi
 
