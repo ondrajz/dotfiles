@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+while IFS=':' read -ra path; do
+	printf "Listing \033[1;36m%d\e[0m paths:\n" "${#path[@]}"
+	for p in "${path[@]}"; do
+    	echo "- $p"
+	done
+done <<< "$PATH"
+
+
