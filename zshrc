@@ -28,7 +28,7 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
     fi
 }
 
-plugins=(go git pass screen sudo bgnotify per-directory-history zsh_reload pip compleat debian django zsh-wakatime)
+plugins=(golang git pass screen sudo bgnotify per-directory-history zsh_reload pip compleat debian django zsh-wakatime)
 source $ZSH/oh-my-zsh.sh
 
 # omit backup files

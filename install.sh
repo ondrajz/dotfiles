@@ -2,9 +2,7 @@
 
 cd "$(dirname "${BASH_SOURCE}")"
 
-git pull origin master
-
 if [ ! -f "~/.zshrc" ]; then
-    ln -ris zshrc "~/.zshrc"
+    ln -s $(pwd)/zshrc $HOME/.zshrc
 fi
 
