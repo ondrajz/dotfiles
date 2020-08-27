@@ -18,9 +18,9 @@ LAST_CMD=""
 typeset -ghi _nextcmd _lastcmd
 
 set_title() {
-    local t="🗔 %y"
+    local t=" %y"
     [ -n "$1" ] && t="$1  $t"
-    print -Pn "\e]0;$t\a"
+    print -Pn "\e]0;$t\a" 2>/dev/null
 }
 
 hook_preexec() {
@@ -71,7 +71,7 @@ hook_precmd() {
     fi
     if [ "$(pwd)" != "$HOME" ]; then
         [ -n "$t" ] && t+="  "
-        t+="🗁 %3~"
+        t+="🗀 %3~"
     fi
 
     set_title "$t"
@@ -106,19 +106,19 @@ prompt_result_line() {
         return 0
     fi
 
-    local left=" %{%b%F{black}%}%h"
+    local left=" %{%b%F{black}%}"
     local right=""
 
     if [ "$LAST_EXEC_TIME" -gt 0 ]; then
         local e="$(( $LAST_EXEC_TIME % 60 ))s"
         (( $LAST_EXEC_TIME >= 60 )) && e="$((( $LAST_EXEC_TIME % 3600) / 60 ))m$e"
         (( $LAST_EXEC_TIME >= 3600 )) && e="$(( $LAST_EXEC_TIME / 3600 ))h$e"
-        right+="%{%b%F{blue}%}⏱ $e "
+        right+="%{%b%F{blue}%}  ⏱ $e "
     fi
     if [ "$LAST_RESULT" -eq 0 ]; then
-        right+="%{%b%F{green}%}⏎ $LAST_RESULT"
+        left+="%{%b%F{green}%}⏎ $LAST_RESULT"
     else
-        right+="%{%B%F{red}%}⏎ $LAST_RESULT"
+        left+="%{%b%F{red}%}⏎ $LAST_RESULT"
     fi
 
     local zero='%([BSUbfksu]|([FB]|){*})'
@@ -134,7 +134,7 @@ prompt_result_line() {
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{%b%K{black}%F{blue}%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{%B%K{black}%F{red}%}✲"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{%B%K{black}%F{red}%}⛏ "
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{%B%K{black}%F{green}%}"
 
 ZSH_THEME_GIT_PROMPT_ADDED="%{%b%K{black}%F{green}%}✚ "
@@ -169,7 +169,7 @@ function timeago() {
     else
         ((sec=num))
     fi
-    
+
     ago=""
     if ((day>3)); then
         ago="${day}d"
@@ -195,8 +195,8 @@ prompt_where() {
             [ -n "$prefix" ] && repo+="%{%b%K{black}%F{magenta}%}/$prefix"
             local dir=$(print -P "%~")
             dir=$(dirname `realpath "$PWD/$cdup"`)
-            location="%{%b%K{black}%F{yellow}%}$(print -rD $dir)%{%B%K{black}%F{black}%}/"
-            location+="%{%b%K{black}%F{magenta}%}$repo%{%b%K{black}%F{white}%} "
+            location="%{%b%K{black}%F{yellow}%}$(print -rD $dir)/"
+            location+="%{%b%K{black}%F{magenta}%}$repo %{%b%K{black}%F{white}%}→ "
         fi
 
         #location="%{%b%K{black}%F{magenta}%}${repo}"
@@ -205,13 +205,15 @@ prompt_where() {
         #fi
         location+="%{%b%K{black}%F{white}%}${git_info} "
 
-        local vers=$(git describe --always --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1/')
-        local hash=`git rev-parse HEAD | cut -c1-7`
-        [ -n "$vers" ] && location+="${vers} "
-        [ -n "$hash" ] && [ "$vers" != "$hash" ] && location+="%{%B%K{black}%F{black}%}<%{%b%f%}${hash}%{%B%K{black}%F{black}%}> "
-        let agosec=$((`date +"%s"` - `git show -s --format="%ct"`))
-        local ago=`timeago $agosec`;
-        [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}⭯ ${ago} "
+      	if git rev-parse HEAD -q 1>/dev/null 2>/dev/null; then
+		    local vers=$(git describe --always --tags 2>/dev/null | sed 's/-\([0-9]*\)-g\([0-9a-f]*\)/+\1/')
+		    local hash=`git rev-parse HEAD | cut -c1-7`
+		    [ -n "$vers" ] && location+="${vers} "
+		    [ -n "$hash" ] && [ "$vers" != "$hash" ] && location+="%{%B%K{black}%F{black}%}<%{%b%f%}${hash}%{%B%K{black}%F{black}%}> "
+		    let agosec=$((`date +"%s"` - `git show -s --format="%ct"`))
+		    local ago=`timeago $agosec`;
+		    [ -n "$ago" ] && location+="%{%B%K{black}%F{black}%}⭯ ${ago} "
+		fi
     fi
 
     local git_status=$(git_prompt_status)
@@ -237,12 +239,12 @@ prompt_char() {
     for i in `seq 1 "$SHLVL"`; do
         c+="➤"
     done
-    [ -n "${ASCIINEMA_REC}" ] && 
+    [ -n "${ASCIINEMA_REC}" ] &&
       echo "%{%b%F{red}%}${c}%{%b%f%}" || echo "%{%b%F{white}%}${c}%{%b%f%}"
 }
 
 prompt_clock() {
-    local clock="%{%B%k%F{black}%}⏲ %D{%H:%M:%S}%{%b%k%f%}"
+    local clock="%{%B%k%F{black}%}🕑%D{%H:%M:%S} %{%b%k%f%}"
     echo -n "${clock}%{%b%k%f%s%}"
 }
 

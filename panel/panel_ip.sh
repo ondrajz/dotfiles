@@ -20,17 +20,20 @@ else
     echo "error $res" > $ETH_FILE
 fi
 
-curl $IPINFO > $EXT_FILE; res=$?
-if [ $res -ne 0 ]; then
-    EXT_CLR="red"
-    ERR="error $res"
-    if [ $res -eq 4 ]; then
-        ERR="network fail"
-    fi
-    echo "$ERR" > $EXT_FILE
-fi
+test `find "$EXT_FILE" -type f -mmin -1 -print -quit` || {
+	/usr/bin/curl -sSfL $IPINFO > $EXT_FILE; res=$?
+	if [ $res -ne 0 ]; then
+		ERR="error $res"
+		if [ $res -eq 4 ]; then
+		    ERR="network fail"
+		fi
+		echo "$ERR" > $EXT_FILE
+	fi
+}
 
 EXT=`cat $EXT_FILE`
+grep error "$EXT_FILE" && EXT_CLR="red"
+
 EXTH=`grep $EXT /etc/hosts | awk '{print $2}'`
 [ -n "$EXTH" ] && EXT="$EXT ($EXTH)"
 ETH=`cat $ETH_FILE`

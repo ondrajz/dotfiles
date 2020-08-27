@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# status command
+echo
+echo "----- retrieving status for `hostname` -----"
+
+[ -x "screenfetch" ] && screenfetch
+echo
+# memory info
+free -w -h
+echo
+# ip
+ip -c -brief addr show scope global
+echo
+
+echo "----- end of status -----"
+echo

@@ -13,7 +13,7 @@ Bold='\e[1;39m';
 
 confirm() {
     local msg="$1"
-    echo -ne " -> ${Bold}$msg [Y/n]${RCol} "
+    echo -ne " -> ${Bold}${msg} [Y/n]${RCol} "
     while true; do
         if [ -n "$ZSH_VERSION" ]; then
             read -k1 -s #"? [y/n] "
@@ -94,7 +94,7 @@ putsel() {
     fi
 }
 
-#man() {
+man() {
 #	env \
 #		LESS_TERMCAP_mb=$(printf "\e[0;31m") \
 #		LESS_TERMCAP_md=$(printf "\e[1;33m") \
@@ -107,7 +107,11 @@ putsel() {
 #		_NROFF_U=1 \
 #		PATH="$HOME/bin:$PATH" \
 #	man "$@"
-#}
+	curgeo=$(xwininfo -id $WINDOWID | grep geometry  | awk  '{print $2}')
+	local icon="/usr/share/icons/elementary-xfce/apps/128/help.png"
+#	--geometry="140x80-0-0" 
+	xfce4-terminal --hide-borders --geometry "$curgeo" -I $icon -T "$@" --execute bash -i -c "PAGER=most /usr/bin/man \"$@\""
+}
 
 repl() {
 	IN=$(cat -)
@@ -156,4 +160,32 @@ repeatcmd() {
             break;
         fi
     done;
+}
+
+list-dirhistory-lines() {
+	local HISTDIR=~/.directory_history
+	[[ -d $HISTDIR ]] || {
+		echo "Missing .directory_history folder"
+		exit 1
+	}
+	(
+		cd $HISTDIR
+		histfiles=$(find . -name history)
+		echo "$histfiles" | xargs wc -l
+	)
+}
+
+gitio() {
+	local url=$1
+    local code=$2
+	[[ -n $url ]] || {
+		return `_err "Missing URL argument"`
+	}
+	[[ -n $code ]] && {
+		if curl -i -sSlf "https://git.io/$code"; then
+			return `_err "Cannot create link with code: $code, link already exists"`
+		fi
+	}
+    confirm "Create git.io link to ${url} (code=${code})?"
+ 	curl -i -sSL -F url="${url}" -F code="${code}" https://git.io/
 }

@@ -1,6 +1,12 @@
 # zsh startup file
 
 unsetopt histignorealldups share_history
+# Appends every command to the history file once it is executed
+#setopt inc_append_history
+# Reloads the history whenever you use it
+#setopt share_history
+# ...
+#unsetopt histignorealldups
 
 #CASE_SENSITIVE="true"
 #ENABLE_CORRECTION="true"
@@ -28,18 +34,57 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
     fi
 }
 
-plugins=(go git pass screen sudo bgnotify per-directory-history zsh_reload pip compleat debian django zsh-wakatime)
-source $ZSH/oh-my-zsh.sh
+# line
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets regexp root)
+#ZSH_HIGHLIGHT_HIGHLIGHTERS=()
 
-# omit backup files
-zstyle ':completion:*:*:*:*' file-patterns '^*(~):source-files' '*:all-files'
+# Declare the variable
+typeset -A ZSH_HIGHLIGHT_STYLES
+# To differentiate aliases from other command types
+ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
+# To have paths colored instead of underlined
+ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,bold'
+# To disable highlighting of globbing expressions
+#ZSH_HIGHLIGHT_STYLES[globbing]='none'
+#ZSH_HIGHLIGHT_STYLES[arg0]='none'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
+
+plugins=(
+	go
+	git
+	pass
+	screen
+	sudo
+	bgnotify
+	compleat
+	pip
+	docker
+	debian
+	django
+	zsh-syntax-highlighting
+	zsh-autosuggestions
+	per-directory-history
+	zsh_reload
+	wakatime
+)
+
+
+source $ZSH/oh-my-zsh.sh
 
 for _file in ~/{.dotfiles/,.}{path,prompt,exports,aliases,functions,extra}; do
     [[ -r "$_file" && -f "$_file" ]] && source "$_file";
 done;
 unset _file;
 
+
+# omit backup files
+#zstyle ':completion:*:*:*:*' file-patterns '^*(~):source-files' '*:all-files'
+
+
+
 # colorize stderr
 #exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
 
 #[ -r "/usr/share/terminfo/x/xterm+256color" ] && export TERM="xterm+256color"
+

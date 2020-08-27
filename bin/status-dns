@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "----------------------------------------------"
+echo " DNS Status"
+echo "----------------------------------------------"
+systemd-resolve --status --no-pager
+
+echo "----------------------------------------------"
+echo " DNS Stats"
+echo "----------------------------------------------"
+systemd-resolve --statistics --no-pager
