@@ -51,7 +51,7 @@ ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
 
 plugins=(
-	go
+	golang
 	git
 	pass
 	screen
@@ -62,11 +62,12 @@ plugins=(
 	docker
 	debian
 	django
+	kubectl
 	zsh-syntax-highlighting
 	zsh-autosuggestions
 	per-directory-history
 	zsh_reload
-	wakatime
+	zsh-wakatime
 )
 
 
@@ -87,4 +88,5 @@ unset _file;
 #exec 2>>( while read X; do print "\e[1m\e[41m${X}\e[0m" > /dev/tty; done & )
 
 #[ -r "/usr/share/terminfo/x/xterm+256color" ] && export TERM="xterm+256color"
+
 
