@@ -8,3 +8,5 @@ export EDITOR="nano"
 [ -x /usr/bin/most ] && PAGER="most"
 
 PATH="$PATH:$DOTFILES/bin"
+
+export PATH=$PATH:$HOME/go/bin:$HOME/.go/bin

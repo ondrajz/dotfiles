@@ -66,7 +66,7 @@ hook_precmd() {
 
     local t=""
     if [[ -n $LAST_CMD && "$LAST_RESULT" != "-1" ]]; then
-        [ "$res" -eq 0 ] && t+="✅  " || t+="❎ "
+        [ "$res" -eq 0 ] && t+="✅  " || t+="❌ "
         t+="$LAST_CMD"
     fi
     if [ "$(pwd)" != "$HOME" ]; then

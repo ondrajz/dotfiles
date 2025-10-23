@@ -136,7 +136,8 @@ function a() {
 }
 
 ping() {
-    /bin/ping "$@" | xargs -L 1 -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
+    #/bin/ping "$@" | xargs -L 1 -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
+    /bin/ping "$@" | xargs -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
 }
 
 repeatcmd() {
