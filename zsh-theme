@@ -221,15 +221,15 @@ prompt_where() {
         location+="%{%b%K{black}%f%}${git_status}"
     fi
 
-	local goexe=$(command which go)
-    if [ -n "$goexe" ]; then
-        gocount=$(command find . -maxdepth 1 -name "*.go" 2>/dev/null | wc -l)
-        #echo "gocount: $gocount"
-        if [[ "$gocount" -gt 0 ]]; then
-            gover=$(go version | sed -e 's/^go version \(go[0-9\.]*\).*$/\1/')
-            location+="%{%b%K{black}%f%} ଘʕ◔ϖ◔ʔଓ %{%B%K{black}%F{black}%} ${gover}%{%B%K{black}%F{black}%}"
-        fi
-    fi
+	#local goexe=$(command which go)
+    #if [ -n "$goexe" ]; then
+    #    gocount=$(command find . -maxdepth 1 -name "*.go" 2>/dev/null | wc -l)
+    #    #echo "gocount: $gocount"
+    #    if [[ "$gocount" -gt 0 ]]; then
+    #        gover=$(go version | sed -e 's/^go version \(go[0-9\.]*\).*$/\1/')
+    #        location+="%{%b%K{black}%f%} ଘʕ◔ϖ◔ʔଓ %{%B%K{black}%F{black}%} ${gover}%{%B%K{black}%F{black}%}"
+    #    fi
+    #fi
 
     echo "${location}%E%{%b%k%f%}"
 }
@@ -248,17 +248,17 @@ prompt_clock() {
     echo -n "${clock}%{%b%k%f%s%}"
 }
 
-#prompt_info() {
-#    local info=""
-#    local git_status=$(git_prompt_status)
-#    if [ -n "$git_status" ]; then
-#        #local repo=$(basename `git rev-parse --show-toplevel`)
-#        info+="%{%b%K{black}%f%}${git_status}"
-#    fi
-#    #local hash=$(git show -s --format=%h 2>/dev/null)
-#    #[ -n "$hash" ] && info+="%{%b%K{black}%f%}sha:%{%B%K{black}%F{black}%}${hash}"
-#    echo "${info}%{%b%k%f%}"
-#}
+prompt_info() {
+    local info=""
+    local git_status=$(git_prompt_status)
+    if [ -n "$git_status" ]; then
+        #local repo=$(basename `git rev-parse --show-toplevel`)
+        info+="%{%b%K{black}%f%}${git_status}"
+    fi
+    #local hash=$(git show -s --format=%h 2>/dev/null)
+    #[ -n "$hash" ] && info+="%{%b%K{black}%f%}sha:%{%B%K{black}%F{black}%}${hash}"
+    echo "${info}%{%b%k%f%}"
+}
 
 prompt_setup() {
     autoload -Uz colors && colors
@@ -275,7 +275,7 @@ prompt_setup() {
 %{%b%k%f%}$(prompt_char) %{%b%k%F{white}%}'
     PROMPT2='➣ '
     #RPROMPT='%{$(echotc UP 1)%}$(prompt_info)%{$(echotc DO 1)%}%{$(echotc LE 10)$(prompt_clock)%}'
-    RPROMPT='$(prompt_clock)'
+    #RPROMPT='$(prompt_clock)'
 }
 
 prompt_setup

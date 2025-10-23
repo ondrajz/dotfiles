@@ -1,5 +1,5 @@
 #!/bin/bash
-bright=${1:-0.5}
+bright=${1:-1}
 xrandr -q | grep --color=auto " connected" | awk '{print $1}' | \
 while read -r monitor ; do
 	xrandr --output $monitor --brightness $bright ;

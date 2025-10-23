@@ -11,6 +11,10 @@ Bold='\e[1;39m';
 
 # handy functions
 
+jsonview() {
+	
+}
+
 confirm() {
     local msg="$1"
     echo -ne " -> ${Bold}${msg} [Y/n]${RCol} "
@@ -140,7 +144,7 @@ function a() {
 }
 
 ping() {
-    /bin/ping "$@" | xargs -L 1 -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
+    /bin/ping "$@" | xargs -I '{}' date '+%Y-%m-%d %H:%M:%S: {}'
 }
 
 repeatcmd() {
@@ -189,3 +193,17 @@ gitio() {
     confirm "Create git.io link to ${url} (code=${code})?"
  	curl -i -sSL -F url="${url}" -F code="${code}" https://git.io/
 }
+
+say2() {
+	set -exuo pipefail
+	pushd /home/ondrej/Projects/piper
+
+#	echo "$*" | ./piper --model en_US-amy-medium.onnx --output-raw | \
+#	aplay --rate 21550 --format S16_LE -t raw -
+	echo "Saying: $*"
+	echo "$*" | /home/ondrej/Projects/piper/piper --model en_US-amy-medium.onnx --output-raw --length-scale 0.55 --noise-scale 1 --noise-w 1 | \
+		aplay -r 21560 -f S16_LE -t raw -
+
+    popd
+}
+

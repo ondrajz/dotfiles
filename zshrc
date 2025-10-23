@@ -35,20 +35,28 @@ function bgnotify_formatted { # exit_status, command, elapsed_sec
 }
 
 # line
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets regexp root)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern root pattern regexp)
 #ZSH_HIGHLIGHT_HIGHLIGHTERS=()
 
 # Declare the variable
 typeset -A ZSH_HIGHLIGHT_STYLES
+
 # To differentiate aliases from other command types
 ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
 # To have paths colored instead of underlined
 ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,bold'
 # To disable highlighting of globbing expressions
-#ZSH_HIGHLIGHT_STYLES[globbing]='none'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=cyan,bold'
+
 #ZSH_HIGHLIGHT_STYLES[arg0]='none'
 ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
+#ZSH_HIGHLIGHT_STYLES[default]='fg=cyan,bold'
+#ZSH_HIGHLIGHT_STYLES[line]='bold'
+
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=cyan'
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#d787ff,bold'
 
 plugins=(
 	golang
@@ -61,15 +69,12 @@ plugins=(
 	pip
 	docker
 	debian
-	django
 	kubectl
-	zsh-syntax-highlighting
 	zsh-autosuggestions
+	zsh-syntax-highlighting
 	per-directory-history
-	zsh_reload
 	zsh-wakatime
 )
-
 
 source $ZSH/oh-my-zsh.sh
 
@@ -80,8 +85,9 @@ unset _file;
 
 
 # omit backup files
-#zstyle ':completion:*:*:*:*' file-patterns '^*(~):source-files' '*:all-files'
+zstyle ':completion:*:*:*:*' file-patterns '^*(~):source-files' '*:all-files'
 
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS} "ma=48;5;244;38;5;255"
 
 
 # colorize stderr
@@ -90,3 +96,36 @@ unset _file;
 #[ -r "/usr/share/terminfo/x/xterm+256color" ] && export TERM="xterm+256color"
 
 
+
+#export GOPATH=/home/ondrej/go
+
+
+#eval $(keychain --eval --agents ssh -Q --quiet id_ed25519)
+
+#eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# place this after nvm initialization!
+autoload -U add-zsh-hook
+load-nvmrc() {
+  local node_version="$(nvm version)"
+  local nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$node_version" ]; then
+      nvm use
+    fi
+  elif [ "$node_version" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc

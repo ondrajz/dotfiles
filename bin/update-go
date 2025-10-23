@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+CURRENT=$(go version | sed -r "s/ /\n/g" | grep -E 'go1')
+
+LATEST=$(curl -s https://go.dev/VERSION?m=text | head -n1)
+
+# Compare and exit if already up-to-date
+if [ "$CURRENT" = "$LATEST" ]; then
+    echo "Go is already up to date: $CURRENT"
+    exit 0
+else
+	echo "Current Go version: $CURRENT"
+	echo "Latest Go version: $LATEST"
+fi
+
+OS=$(go env GOOS)
+ARCH=$(go env GOARCH)
+
+echo "Downloading latest Go version: ${LATEST}.${OS}-${ARCH}"
+curl -LO https://go.dev/dl/${LATEST}.${OS}-${ARCH}.tar.gz
+
+echo "Moving old Go to ~/.go.old"
+(
+	cd $HOME
+	mkdir -vp .go.old
+	mv -v .go ".${CURRENT}"
+	mv -v ".${CURRENT}" ".go.old/"
+)
+
+echo "Extracting new Go"
+mkdir -p "$HOME/.go"
+tar -C "$HOME/.go" --strip-components=1 -xzf ${LATEST}.${OS}-${ARCH}.tar.gz
+
+echo "Successfully update Go from $CURRENT to $LATEST"
+go version
+
